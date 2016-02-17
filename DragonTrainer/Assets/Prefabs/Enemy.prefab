@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8403b5be34c70304898ada3fd7a9f580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleEffect: {fileID: 0}
+  particleEffect: {fileID: 103286, guid: 7c3f1850cfd1f6648b99e6ea1d7992ad, type: 2}
 --- !u!143 &14372744
 CharacterController:
   m_ObjectHideFlags: 1
@@ -135,6 +135,10 @@ Prefab:
       propertyPath: distFromObstacles
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: particleEffect
+      value: 
+      objectReference: {fileID: 103286, guid: 7c3f1850cfd1f6648b99e6ea1d7992ad, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 162392}
