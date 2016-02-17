@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+//ben version
 
 /* This script will hopefully control the vehicles
  * in this project. This will include behaviors such
@@ -196,4 +196,48 @@ abstract public class VehicleBehavior : MonoBehaviour {
 		// push the object so that it aligns with the direction
 		return direction.normalized - velocity.normalized;
 	}
+
+    protected Vector3 Avoid(GameObject obs, float safeDistance)
+    {
+        dv = Vector3.zero;
+        float obRadius = 1.2f; // hard-coded for now, perhaps we'll change it
+        safeDistance += obRadius;
+
+        //vector from vehicle to center of obstacle
+        Vector3 vecToCenter = obs.transform.position - transform.position;
+        //eliminate y component so we have a 2D vector in the x, z plane
+        vecToCenter.y = 0;
+
+        // distance should not be allowed to be zero or negative because 
+        // later we will divide by it and do not want to divide by zero
+        // or cause an inadvertent sign change.
+        float dist = Mathf.Max(vecToCenter.magnitude - obRadius - radius, 0.1f);
+
+        // if too far to worry about, exit method
+        if (dist > safeDistance)
+            return Vector3.zero;
+
+        //if behind us, exit method
+        if (Vector3.Dot(vecToCenter, transform.forward) < 0)
+            return Vector3.zero;
+
+        float rightDotVTC = Vector3.Dot(vecToCenter, transform.right);
+
+        //if we can pass safely, exit method
+        if (Mathf.Abs(rightDotVTC) > radius + obRadius)
+            return Vector3.zero;
+
+        //if we get this far, than we need to steer
+
+        //obstacle is on right so we steer to left
+        if (rightDotVTC > 0)
+            dv = transform.right * -maxSpeed * safeDistance / dist;
+        else
+            //obstacle on left so we steer to right
+            dv = transform.right * maxSpeed * safeDistance / dist;
+
+        dv -= velocity;    //calculate the steering force
+        dv.y = 0;		   // only steer in the x/z plane
+        return dv;
+    }
 }

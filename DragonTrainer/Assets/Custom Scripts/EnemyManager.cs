@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+//ben version
 public class EnemyManager : MonoBehaviour {
 
 	GameObject[] waypoints;
 	GameObject tower;
+
+    //can be set in the editor
+    public int numOfEnemies = 10;
+    public int numOfObstacles = 100;
+
+    //set manually in editor so the program understands
+    public Object enemyPrefab;
+    private GameObject[] enemies;
+    public Object treePrefab;
 
 	// Use this for initialization
 	void Start () {
@@ -13,6 +22,28 @@ public class EnemyManager : MonoBehaviour {
 		tower = GameObject.Find("Tower");
 		// assign waypoints indicies in order of closest to farthest from the tower
 		IndexWaypoints();
+
+        //create obstacles
+        for (int i = 0; i < numOfObstacles; i++)
+        {
+            //create them all over the terrain
+            Vector3 pos = new Vector3(Random.Range(-130, 330), 0.0f, Random.Range(-100, 330));
+            //put the obstacles on top of terrain
+            pos.y = Terrain.activeTerrain.SampleHeight(pos);
+            //create now
+            GameObject.Instantiate(treePrefab, pos, Quaternion.identity);
+        }
+
+        //create the specified number of enemies
+        for (int i = 0; i < numOfEnemies; i++)
+        {
+            //create them at the far end of the path
+            Vector3 pos = new Vector3(Random.Range(-40, 100), 0.0f, Random.Range(300, 360));
+            //put the enemy on top of terrain
+            pos.y = Terrain.activeTerrain.SampleHeight(pos) + 1f;
+            //create now
+            GameObject.Instantiate(enemyPrefab, pos, Quaternion.identity);
+        }
 	}
 	
 	// Update is called once per frame
