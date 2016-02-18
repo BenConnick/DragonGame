@@ -200,7 +200,7 @@ abstract public class VehicleBehavior : MonoBehaviour {
     protected Vector3 Avoid(GameObject obs, float safeDistance)
     {
         dv = Vector3.zero;
-        float obRadius = 1.2f; // hard-coded for now, perhaps we'll change it
+        float obRadius = 3.2f; // hard-coded for now, perhaps we'll change it
         safeDistance += obRadius;
 
         //vector from vehicle to center of obstacle

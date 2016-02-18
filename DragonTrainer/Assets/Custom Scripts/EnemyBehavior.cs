@@ -6,8 +6,8 @@ public class EnemyBehavior : VehicleBehavior {
 
     //Attributes 
     public float wanderWt = 10.0f;
-	protected float seekWt = 10.0f; // I'd prefer these public so we can tweek them
-    protected float alignWt = 100.0f; // I'd prefer these public so we can tweek them
+	public float seekWt = 10.0f;
+    public float alignWt = 100.0f;
     public float avoidWt = 100.0f;
     public float distFromEnemies = 1.0f;
     public float distFromObstacles = 2.0f;
@@ -32,9 +32,9 @@ public class EnemyBehavior : VehicleBehavior {
     protected override void CalcSteeringForce()
     {
         Vector3 force = Vector3.zero;
-        //force += wanderWt * Wander();
-        //force += wanderWt * Wander();
-        //force += seekWt * Arrival(GameObject.FindGameObjectWithTag("tower").transform.position);
+        force += wanderWt * Wander();
+        force += wanderWt * Wander();
+        force += seekWt * Arrival(GameObject.FindGameObjectWithTag("tower").transform.position);
 
         //avoid each other
         for (int i = 0; i < enemies.Length; i++)
@@ -60,8 +60,8 @@ public class EnemyBehavior : VehicleBehavior {
 		int prevWaypointIndex = (nextWaypointIndex+1 > finalWaypointIndex) ? 0 : nextWaypointIndex + 1;
 
 		// calculate the path follwing force
-		force += seekWt * FollowPath(gameObject,manager.Waypoints[prevWaypointIndex].transform.position,manager.Waypoints[nextWaypointIndex].transform.position,5.0f);
-		force += alignWt * Align(manager.Waypoints[nextWaypointIndex].transform.position - manager.Waypoints[prevWaypointIndex].transform.position);
+		//force += seekWt * FollowPath(gameObject,manager.Waypoints[prevWaypointIndex].transform.position,manager.Waypoints[nextWaypointIndex].transform.position,5.0f);
+		//force += alignWt * Align(manager.Waypoints[nextWaypointIndex].transform.position - manager.Waypoints[prevWaypointIndex].transform.position);
         
         force = Vector3.ClampMagnitude(force, maxForce);
         ApplyForce(force);

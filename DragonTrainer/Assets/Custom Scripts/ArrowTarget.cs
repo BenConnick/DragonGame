@@ -4,6 +4,7 @@ using System.Collections;
 public class ArrowTarget : MonoBehaviour {
 
 	public GameObject particleEffect;
+	public bool destroyOnHit = false;
 
 	// Use this for initialization
 	void Start () {
@@ -19,6 +20,9 @@ public class ArrowTarget : MonoBehaviour {
 				GameObject.Instantiate(particleEffect,transform.position,transform.rotation);
 			}
 			print (gameObject.name + " HIT");
+			if (destroyOnHit) {
+				Destroy(gameObject);
+			}
 		}
 	}
 	
