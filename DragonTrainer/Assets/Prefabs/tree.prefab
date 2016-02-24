@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3389112}
   - 23: {fileID: 2361876}
   - 65: {fileID: 6538700}
+  - 114: {fileID: 11422932}
   m_Layer: 0
   m_Name: tree
   m_TagString: obstacle
@@ -74,6 +75,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.80209589, y: 19.0154991, z: 1.82716322}
   m_Center: {x: -.310199738, y: 9.4409256, z: -.0190353394}
+--- !u!114 &11422932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796cf55972be9f449b3cc0185302593a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distFromTower: 6
+  distFromPath: 25
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -84,6 +98,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_TagString
       value: obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: distFromTower
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: distFromPath
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
