@@ -13,11 +13,16 @@ public class EnemyBehavior : VehicleBehavior {
     public float distFromObstacles = 2.0f;
 	protected int finalWaypointIndex = 9;
 	protected int nextWaypointIndex = 8;
+	protected Transform target;
+	protected NavMeshAgent nAgent;
 	EnemyManager manager;
 
     //keep track of surroundings
     private GameObject[] enemies;
     private GameObject[] obstacles;
+
+	// for use with navmesh
+	bool nav = false;
 
 	// Use this for initialization
 	void Start () {
@@ -28,43 +33,50 @@ public class EnemyBehavior : VehicleBehavior {
         //populate the arrays
         enemies = GameObject.FindGameObjectsWithTag("enemy");
         obstacles = GameObject.FindGameObjectsWithTag("obstacle");
+		nAgent = GetComponent<NavMeshAgent> ();
+		if (nAgent != null) nav = true;
+
+		target = GameObject.FindGameObjectWithTag ("tower").transform;
+
 	}
     protected override void CalcSteeringForce()
     {
-        Vector3 force = Vector3.zero;
-        force += wanderWt * Wander();
-        force += wanderWt * Wander();
-        force += seekWt * Arrival(GameObject.FindGameObjectWithTag("tower").transform.position);
+		if (nav) {
+			//if (nAgent.destination == null)
+				nAgent.SetDestination (target.position);
+		}
+		else {
+			Vector3 force = Vector3.zero;
+			force += wanderWt * Wander ();
+			force += wanderWt * Wander ();
+			force += seekWt * Arrival (target.position);
 
-        //avoid each other
-        for (int i = 0; i < enemies.Length; i++)
-        {
-            if (enemies[i].transform.position != transform.position)
-            {
-                force += avoidWt * Avoid(enemies[i], distFromEnemies);
-            }
-        }
+			//avoid each other
+			for (int i = 0; i < enemies.Length; i++) {
+				if (enemies [i].transform.position != transform.position) {
+					force += avoidWt * Avoid (enemies [i], distFromEnemies);
+				}
+			}
 
-        //avoid obstacles
-        for (int i = 0; i < obstacles.Length; i++)
-        {
-            if (obstacles[i].transform.position != transform.position)
-            {
-                force += avoidWt * Avoid(obstacles[i], distFromObstacles);
-            }
-        }
+			//avoid obstacles
+			for (int i = 0; i < obstacles.Length; i++) {
+				if (obstacles [i].transform.position != transform.position) {
+					force += avoidWt * Avoid (obstacles [i], distFromObstacles);
+				}
+			}
 
-		FindWaypoints();
+			//FindWaypoints();
 
-		// create path by drawing line from prev to next
-		int prevWaypointIndex = (nextWaypointIndex+1 > finalWaypointIndex) ? 0 : nextWaypointIndex + 1;
+			// create path by drawing line from prev to next
+			//int prevWaypointIndex = (nextWaypointIndex+1 > finalWaypointIndex) ? 0 : nextWaypointIndex + 1;
 
-		// calculate the path follwing force
-		//force += seekWt * FollowPath(gameObject,manager.Waypoints[prevWaypointIndex].transform.position,manager.Waypoints[nextWaypointIndex].transform.position,5.0f);
-		//force += alignWt * Align(manager.Waypoints[nextWaypointIndex].transform.position - manager.Waypoints[prevWaypointIndex].transform.position);
-        
-        force = Vector3.ClampMagnitude(force, maxForce);
-        ApplyForce(force);
+			// calculate the path follwing force
+			//force += seekWt * FollowPath(gameObject,manager.Waypoints[prevWaypointIndex].transform.position,manager.Waypoints[nextWaypointIndex].transform.position,5.0f);
+			//force += alignWt * Align(manager.Waypoints[nextWaypointIndex].transform.position - manager.Waypoints[prevWaypointIndex].transform.position);
+	        
+			force = Vector3.ClampMagnitude (force, maxForce);
+			ApplyForce (force);
+		}
     }
 
 	protected void FindWaypoints() {

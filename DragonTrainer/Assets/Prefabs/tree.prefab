@@ -12,6 +12,7 @@ GameObject:
   - 23: {fileID: 2361876}
   - 65: {fileID: 6538700}
   - 114: {fileID: 11422932}
+  - 208: {fileID: 20866518}
   m_Layer: 0
   m_Name: tree
   m_TagString: obstacle
@@ -26,7 +27,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 149706}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50.2061005, y: 7.20175934, z: 88.2579803}
+  m_LocalPosition: {x: 50.2061, y: 7.2017593, z: 88.25798}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -50,8 +51,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -73,8 +76,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.80209589, y: 19.0154991, z: 1.82716322}
-  m_Center: {x: -.310199738, y: 9.4409256, z: -.0190353394}
+  m_Size: {x: 1.8020959, y: 19.0155, z: 1.8271632}
+  m_Center: {x: -0.31019974, y: 9.440926, z: -0.01903534}
 --- !u!114 &11422932
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -88,6 +91,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distFromTower: 6
   distFromPath: 25
+--- !u!208 &20866518
+NavMeshObstacle:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149706}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.23400001, y: 13.387001, z: 0.019000001}
+  m_TimeToStationary: 0.5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -106,6 +124,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: distFromPath
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Extents.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Extents.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Extents.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
