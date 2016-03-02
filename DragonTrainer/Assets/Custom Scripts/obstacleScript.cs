@@ -14,7 +14,6 @@ public class obstacleScript : MonoBehaviour {
         waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
         tower = GameObject.Find("Tower");
 
-        print("called");
         //keep trees away from tower
         if(Mathf.Abs((tower.transform.position - transform.position).magnitude) < distFromTower)
         {

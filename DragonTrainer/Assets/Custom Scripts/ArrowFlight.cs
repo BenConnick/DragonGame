@@ -17,7 +17,6 @@ public class ArrowFlight : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		print (rb.velocity);
 		transform.LookAt(transform.position+rb.velocity*Time.deltaTime);
 	}
 }
