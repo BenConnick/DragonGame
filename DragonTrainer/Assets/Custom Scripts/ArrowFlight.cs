@@ -9,14 +9,19 @@ public class ArrowFlight : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
+        flying = true;
 	}
 
-	void OnCollisionEnter() {
-		flying = false;
+	void OnCollisionEnter(Collision evt) {
+        if (evt.collider.name != "FPSController")
+        {
+            flying = false;
+            print("flying = false");
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.LookAt(transform.position+rb.velocity*Time.deltaTime);
+        if (flying) transform.LookAt(transform.position+rb.velocity*Time.deltaTime);
 	}
 }

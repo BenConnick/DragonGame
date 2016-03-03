@@ -48,6 +48,8 @@
      <Compile Include="Assets\Custom Scripts\ArrowFlight.cs" />
      <Compile Include="Assets\Custom Scripts\ArrowTarget.cs" />
      <Compile Include="Assets\Custom Scripts\BowShoot.cs" />
+     <Compile Include="Assets\Custom Scripts\CommandControls.cs" />
+     <Compile Include="Assets\Custom Scripts\Decision.cs" />
      <Compile Include="Assets\Custom Scripts\DestroyAfterTime.cs" />
      <Compile Include="Assets\Custom Scripts\Dragon.cs" />
      <Compile Include="Assets\Custom Scripts\EnemyBehavior.cs" />
