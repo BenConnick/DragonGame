@@ -12,6 +12,7 @@ public class Dragon : VehicleBehavior {
     public float distFromEnemies;
     public float distFromObstacles;
     public float maxDistFromPlayer;
+    public GameObject player;
 	protected Transform target;
 	protected NavMeshAgent nAgent;
     protected int mode;
@@ -23,17 +24,18 @@ public class Dragon : VehicleBehavior {
     
     // stack of orders (command history)
     protected int[] orders; // commands are in enum/int form
-    protected int lastOrder=-1;
-    protected int currentOrder;
+    protected int lastOrderIdx=0; // this should be -1 but for debugging we set it to a default value
+    protected int currentOrder=-1;
 
     // stack of actions (action history)
     protected int[] actions; // actions are in enum/int form
-    protected int lastAction=-1;
+    protected int lastActionIdx = 0; // this should be -1 but for debugging we set it to a default value
 
     protected int state;
 
     protected Decision decisionTreeRoot;
 
+    // the manifestation of the top of the action stack
     public int State
     {
         get
@@ -66,16 +68,21 @@ public class Dragon : VehicleBehavior {
 
         // create decision tree
         decisionTreeRoot = BuildTreeFromCSVString("?command,?wander,wander,?goto,goto,?attack,?fire,fire,slash,wander,?wandering,?toofar,goto,wander,?attacking,wander,?slashing,slash,fire");
+
+        AddAction(1); // start wandering
+
+
 	}
 
     void Update()
     {
+        setStateFromString(TraverseDecisionTree(decisionTreeRoot));
         base.Update();
-
+        // parent (base) calls CalcSteeringForce
     }
 
     // increases the alloted data for the array if they get too big
-    protected void BufferArrayLength<T>(T[] arr, int lastEntry)
+    protected void BufferArrayLength<T>(ref T[] arr, int lastEntry)
     {
         if (lastEntry > arr.Length / 2)
         {
@@ -101,23 +108,107 @@ public class Dragon : VehicleBehavior {
     // add a new order to the stack
     protected void AddOrder(int order)
     {
-        lastOrder++;
-        orders[lastOrder] = order;
-        BufferArrayLength<int>(orders, lastOrder);
+        lastOrderIdx++;
+        orders[lastOrderIdx] = order;
+        currentOrder = order;
+        BufferArrayLength<int>(ref orders, lastOrderIdx);
     }
 
     // add a new action to the stack
     protected void AddAction(int action)
     {
-        lastAction++;
-        actions[lastAction] = action;
-        BufferArrayLength<int>(actions, lastAction);
+        lastActionIdx++;
+        actions[lastActionIdx] = action;
+        BufferArrayLength<int>(ref actions, lastActionIdx);
+    }
+
+    protected string TraverseDecisionTree(Decision node)
+    {
+        print("TDT: " + node.Content);
+        if (node == null) return null;
+        // if yes is null then this is a leaf node
+        if (node.Yes == null)
+        {
+            return node.Content;
+        }
+        // if we make it this far, the node is a branch
+        if (MakeDecision(node))
+        {
+            return TraverseDecisionTree(node.Yes);
+        }
+        else
+        {
+            return TraverseDecisionTree(node.No);
+        }
     }
 
     // uses a binary decision tree to decide on a course of action
-    protected void MakeDecision()
+    protected bool MakeDecision(Decision decision)
     {
+        bool returnVal = false;
+        switch (decision.Content)
+        {
+            case "?command":
+                returnVal = (currentOrder>=0);
+                break;
+            case "?wander":
+                returnVal = (currentOrder==0);
+                break;
+            case "?goto":
+                returnVal = (currentOrder == 1);
+                break;
+            case "?attack":
+                returnVal = (currentOrder == 3 || currentOrder == 4);
+                break;
+            case "?fire":
+                returnVal = (currentOrder == 4);
+                break;
+            case "?wandering":
+                print("LAidx: " + lastActionIdx);
+                returnVal = (actions[lastActionIdx] == 1);
+                break;
+            case "?toofar":
+                returnVal = ((transform.position - player.transform.position).sqrMagnitude > maxDistFromPlayer*maxDistFromPlayer);
+                break;
+            case "?attacking":
+                returnVal = actions[lastActionIdx] == 3 || actions[lastActionIdx] == 4;
+                break;
+            case "?slashing":
+                returnVal = actions[lastActionIdx] == 3;
+                break;
+            default:
+                break;
+        }
+        return returnVal;
+    }
 
+    protected void setStateFromString(string decisionString)
+    {
+        switch (decisionString)
+        {
+            // halt
+            case "halt":
+                state = 0;
+                break;
+            // wander around
+            case "wander":
+                state = 1;
+                break;
+            // arrive / follow
+            case "goto":
+                state = 2;
+                break;
+            // try to intercept
+            case "chase":
+                state = 3;
+                break;
+            // if something goes wrong, wander
+            default:
+                state = 1;
+                break;
+        }
+        // add an action
+        AddAction(state);
     }
 
     protected override void CalcSteeringForce()
@@ -126,17 +217,22 @@ public class Dragon : VehicleBehavior {
 
         switch (state)
         {
-            // wander
+            // halt
             case 0:
-                force += wanderWt * Wander();
+                // arrive at own position
+                force += seekWt * Arrival(transform.position);
                 break;
             // go to target
             case 1:
+                force += wanderWt * Wander();
+                break;
+            // arrive / follow
+            case 2:
                 // NOTE TO SELF: set target
                 force += seekWt * Arrival(target.position);
                 break;
             // try to intercept
-            case 2:
+            case 3:
                 force += seekWt * Pursue(target.gameObject,1f);
                 break;
             // if something goes wrong, wander
