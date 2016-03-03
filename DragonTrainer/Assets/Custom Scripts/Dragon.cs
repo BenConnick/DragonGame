@@ -60,14 +60,14 @@ public class Dragon : VehicleBehavior {
         enemies = GameObject.FindGameObjectsWithTag("enemy");
         obstacles = GameObject.FindGameObjectsWithTag("obstacle");
 
-		target = GameObject.FindGameObjectWithTag ("tower").transform;
+		target = player.transform;
 
         // instantiate history
         orders = new int[100];
         actions = new int[100];
 
         // create decision tree
-        decisionTreeRoot = BuildTreeFromCSVString("?command,?wander,wander,?goto,goto,?attack,?fire,fire,slash,wander,?wandering,?toofar,goto,wander,?attacking,wander,?slashing,slash,fire");
+        decisionTreeRoot = BuildTreeFromCSVString("?command,?wander,wander,?goto,goto,?attack,?fire,fire,slash,wander,?wandering,?toofar,goto,wander,?going,wander,?slashing,slash,fire");
 
         AddAction(1); // start wandering
 
@@ -164,7 +164,7 @@ public class Dragon : VehicleBehavior {
                 returnVal = (currentOrder == 4);
                 break;
             case "?wandering":
-                print("LAidx: " + lastActionIdx);
+                //print("LAidx: " + lastActionIdx);
                 returnVal = (actions[lastActionIdx] == 1);
                 break;
             case "?toofar":
@@ -175,6 +175,9 @@ public class Dragon : VehicleBehavior {
                 break;
             case "?slashing":
                 returnVal = actions[lastActionIdx] == 3;
+                break;
+            case "?going":
+                returnVal = actions[lastActionIdx] == 2;
                 break;
             default:
                 break;
@@ -258,7 +261,7 @@ public class Dragon : VehicleBehavior {
     {
         // do a reverse pre-order traversal of comma separated string
         string[] nodeStrings = treeStr.Split(new char[] {','});
-        print(nodeStrings.Length);
+        //print(nodeStrings.Length);
         Decision root = BuildTreeRecursiveHelper(nodeStrings, 0);
         return root;
     }
