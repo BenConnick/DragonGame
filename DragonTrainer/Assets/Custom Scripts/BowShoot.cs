@@ -51,7 +51,7 @@ public class BowShoot : MonoBehaviour {
 
 	public void Shoot() {
 		Quaternion lookRot = xRotGO.transform.rotation;// * yRotGO.transform.rotation; 
-		GameObject projectile = (GameObject)GameObject.Instantiate(AmmoGO,gameObject.transform.position + gameObject.transform.rotation*new Vector3(0,0,2), lookRot);
+		GameObject projectile = (GameObject)GameObject.Instantiate(AmmoGO,transform.position + transform.right*0.3f + transform.up*0.3f + transform.rotation*new Vector3(0,0,2), lookRot);
 		projectile.GetComponent<Rigidbody>().AddForce(lookRot*new Vector3(0,0,pForce));
 	}
 }
