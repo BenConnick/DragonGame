@@ -16,6 +16,12 @@ public class ArrowFlight : MonoBehaviour {
         if (evt.collider.name != "FPSController")
         {
             flying = false;
+			GetComponent<Rigidbody> ().isKinematic = false;
+			GetComponent<Rigidbody> ().useGravity = false;
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			GetComponent<Rigidbody> ().freezeRotation = true;
+			GetComponent<Collider> ().enabled = false;
+			transform.SetParent (evt.collider.transform);
             print("flying = false");
         }
 	}

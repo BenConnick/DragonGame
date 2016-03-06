@@ -1224,6 +1224,14 @@ Prefab:
       propertyPath: EmissionModule.rate.scalar
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 19861434, guid: e35f373b7d10c9c4cadd48c9c0679c0e, type: 2}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19861434, guid: e35f373b7d10c9c4cadd48c9c0679c0e, type: 2}
+      propertyPath: ColorModule.gradient.maxGradient.key1.rgba
+      value: 16777215
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e35f373b7d10c9c4cadd48c9c0679c0e, type: 2}
   m_IsPrefabParent: 0
