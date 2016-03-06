@@ -95,13 +95,13 @@ public class Dragon : VehicleBehavior {
     // give the dragon a command from CommandControls
     public void Command(int command)
     {
-        switch (command)
+        /*switch (command)
         {
             case 0:
-
+				break
             default:
                 break;
-        }
+        }*/
         AddOrder(command);
     }
 
