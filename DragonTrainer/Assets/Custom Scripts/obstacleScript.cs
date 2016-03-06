@@ -30,6 +30,11 @@ public class obstacleScript : MonoBehaviour {
                 transform.position = new Vector3(Random.Range(-40, 100), 0.0f, Random.Range(300, 360));
             }
         }
+
+        //give variety to the tree's appearance
+        transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), Random.Range(0, 180));
+        transform.localScale += new Vector3(0, Random.Range(-2, 6)/10.0f, 0);
+        gameObject.GetComponent<Renderer>().materials[1].color = new Color(Random.Range(0, 5) / 10.0f, 0.55f, 0.08f);
 	}
 	
 	// Update is called once per frame
