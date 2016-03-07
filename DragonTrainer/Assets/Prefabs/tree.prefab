@@ -13,7 +13,7 @@ GameObject:
   - 65: {fileID: 6538700}
   - 114: {fileID: 11422932}
   - 208: {fileID: 20866518}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: tree
   m_TagString: obstacle
   m_Icon: {fileID: 0}

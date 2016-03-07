@@ -8,6 +8,7 @@ TagManager:
   - obstacle
   - tower
   - enemy
+  - marker
   layers:
   - Default
   - TransparentFX

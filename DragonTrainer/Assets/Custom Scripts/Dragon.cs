@@ -95,13 +95,18 @@ public class Dragon : VehicleBehavior {
     // give the dragon a command from CommandControls
     public void Command(int command)
     {
-        /*switch (command)
+        switch (command)
         {
-            case 0:
-				break
+                //go to a specified point -- demo code for finding a target
+                //case 1 -- point target
+                //case 3 -- enemy target --DOESN'T QUITe WORK    
+            case 1:
+            case 3:
+                target = GameObject.FindGameObjectWithTag("marker").transform;
+                break;
             default:
                 break;
-        }*/
+        }
         AddOrder(command);
     }
 
