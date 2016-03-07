@@ -33,8 +33,8 @@ public class obstacleScript : MonoBehaviour {
 
         //give variety to the tree's appearance
         transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), Random.Range(0, 180));
-        transform.localScale += new Vector3(0, Random.Range(-2, 6)/10.0f, 0);
-        gameObject.GetComponent<Renderer>().materials[1].color = new Color(Random.Range(0, 5) / 10.0f, 0.55f, 0.08f);
+        transform.localScale += new Vector3(Random.Range(0, 2) / 10.0f, Random.Range(-2, 8) / 10.0f, Random.Range(0, 2) / 10.0f);
+        gameObject.GetComponent<Renderer>().materials[1].color = new Color(Random.Range(0, 10) / 10.0f, Random.Range(4, 9) / 10.0f, Random.Range(0, 3) / 10.0f);
 	}
 	
 	// Update is called once per frame
