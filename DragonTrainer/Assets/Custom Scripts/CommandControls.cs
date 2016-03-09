@@ -126,10 +126,14 @@ public class CommandControls : MonoBehaviour {
             dragon.Command(commandNum); //tell the dragon our command
             UpdateHUD(commandNum); // command went through, update HUD
 
+			// set target to location
+			dragon.SetTarget(marker.transform);
+
             //set target if applicable
             if (commandNum == 3 && hit.transform != null)
             {
                 targetEnemy = hit.transform;
+				dragon.SetTarget (targetEnemy); // set target in dragon
                 activeTarget = true;
             }
 
@@ -154,7 +158,6 @@ public class CommandControls : MonoBehaviour {
 
     //raycasting method for commands -- may need arg for command number
     void castCommand(){
-        print("Cast");
         //update ray castin variables
         origin = camera.transform.position;
         direction = camera.transform.forward;

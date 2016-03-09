@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Custom_Scripts;
 
 public class Dragon : VehicleBehavior {
 
@@ -21,6 +20,9 @@ public class Dragon : VehicleBehavior {
     //keep track of surroundings
     protected GameObject[] enemies;
     protected GameObject[] obstacles;
+
+	// state machine 2D int array
+	protected int[,] stateMachine;
     
     // stack of orders (command history)
     protected int[] orders; // commands are in enum/int form
@@ -31,9 +33,7 @@ public class Dragon : VehicleBehavior {
     protected int[] actions; // actions are in enum/int form
     protected int lastActionIdx = 0; // this should be -1 but for debugging we set it to a default value
 
-    protected int state;
-
-    protected Decision decisionTreeRoot;
+    protected int state = 0;
 
     // the manifestation of the top of the action stack
     public int State
@@ -50,36 +50,54 @@ public class Dragon : VehicleBehavior {
 
 	// Use this for initialization
 	void Start () {
-        //call the vehicle start method
-        base.Start ();
-
-        // get manager reference
-		manager = FindObjectOfType<EnemyManager>();
+        
+		base.Start (); //call the vehicle start method
+        
+		manager = FindObjectOfType<EnemyManager>(); // get manager reference
 
         //populate the arrays
         enemies = GameObject.FindGameObjectsWithTag("enemy");
         obstacles = GameObject.FindGameObjectsWithTag("obstacle");
 
-		target = player.transform;
+		target = player.transform; // set target player
 
         // instantiate history
-        orders = new int[100];
-        actions = new int[100];
+        orders = new int[100]; // list of orders given
+		actions = new int[100]; // list of all actions taken (state history)
 
-        // create decision tree
-        decisionTreeRoot = BuildTreeFromCSVString("?command,?wander,wander,?goto,goto,?attack,?fire,fire,slash,wander,?wandering,?toofar,goto,wander,?going,wander,?slashing,slash,fire");
+		SetStateTransitions(); // create state machine
 
         AddAction(1); // start wandering
-
-
 	}
 
     void Update()
     {
-        setStateFromString(TraverseDecisionTree(decisionTreeRoot));
+		// find new state using statemachine rules
+		int newState = stateMachine [Mathf.Max(0,currentOrder), state]; // changes state based on command arg
+
+		// only change state if there is a difference
+		if (newState != state) {
+			// debug
+			print("" + state + "->" + newState);
+
+			// update state
+			state = newState;
+
+			// update record / history
+			AddAction (state);
+		}
+		// order followed, wait for new order
+		currentOrder = -1;
+
+		// move around
         base.Update();
         // parent (base) calls CalcSteeringForce
     }
+
+	// set the dragon's target
+	public void SetTarget(Transform t) {
+		target = t;
+	}
 
     // increases the alloted data for the array if they get too big
     protected void BufferArrayLength<T>(ref T[] arr, int lastEntry)
@@ -95,18 +113,6 @@ public class Dragon : VehicleBehavior {
     // give the dragon a command from CommandControls
     public void Command(int command)
     {
-        switch (command)
-        {
-                //go to a specified point -- demo code for finding a target
-                //case 1 -- point target
-                //case 3 -- enemy target --DOESN'T QUITe WORK    
-            case 1:
-            case 3:
-                target = GameObject.FindGameObjectWithTag("marker").transform;
-                break;
-            default:
-                break;
-        }
         AddOrder(command);
     }
 
@@ -121,106 +127,17 @@ public class Dragon : VehicleBehavior {
 
     // add a new action to the stack
     protected void AddAction(int action)
-    {
-        lastActionIdx++;
-        actions[lastActionIdx] = action;
-        BufferArrayLength<int>(ref actions, lastActionIdx);
-    }
+	{
+		lastActionIdx++;
+		actions [lastActionIdx] = action;
+		BufferArrayLength<int> (ref actions, lastActionIdx);
+	}
+		
 
-    protected string TraverseDecisionTree(Decision node)
-    {
-        print("TDT: " + node.Content);
-        if (node == null) return null;
-        // if yes is null then this is a leaf node
-        if (node.Yes == null)
-        {
-            return node.Content;
-        }
-        // if we make it this far, the node is a branch
-        if (MakeDecision(node))
-        {
-            return TraverseDecisionTree(node.Yes);
-        }
-        else
-        {
-            return TraverseDecisionTree(node.No);
-        }
-    }
-
-    // uses a binary decision tree to decide on a course of action
-    protected bool MakeDecision(Decision decision)
-    {
-        bool returnVal = false;
-        switch (decision.Content)
-        {
-            case "?command":
-                returnVal = (currentOrder>=0);
-                break;
-            case "?wander":
-                returnVal = (currentOrder==0);
-                break;
-            case "?goto":
-                returnVal = (currentOrder == 1);
-                break;
-            case "?attack":
-                returnVal = (currentOrder == 3 || currentOrder == 4);
-                break;
-            case "?fire":
-                returnVal = (currentOrder == 4);
-                break;
-            case "?wandering":
-                //print("LAidx: " + lastActionIdx);
-                returnVal = (actions[lastActionIdx] == 1);
-                break;
-            case "?toofar":
-                returnVal = ((transform.position - player.transform.position).sqrMagnitude > maxDistFromPlayer*maxDistFromPlayer);
-                break;
-            case "?attacking":
-                returnVal = actions[lastActionIdx] == 3 || actions[lastActionIdx] == 4;
-                break;
-            case "?slashing":
-                returnVal = actions[lastActionIdx] == 3;
-                break;
-            case "?going":
-                returnVal = actions[lastActionIdx] == 2;
-                break;
-            default:
-                break;
-        }
-        return returnVal;
-    }
-
-    protected void setStateFromString(string decisionString)
-    {
-        switch (decisionString)
-        {
-            // halt
-            case "halt":
-                state = 0;
-                break;
-            // wander around
-            case "wander":
-                state = 1;
-                break;
-            // arrive / follow
-            case "goto":
-                state = 2;
-                break;
-            // try to intercept
-            case "chase":
-                state = 3;
-                break;
-            // if something goes wrong, wander
-            default:
-                state = 1;
-                break;
-        }
-        // add an action
-        AddAction(state);
-    }
-
+	// move the Dragon
     protected override void CalcSteeringForce()
     {
+		// reset force vector
 		Vector3 force = Vector3.zero;
 
         switch (state)
@@ -262,66 +179,20 @@ public class Dragon : VehicleBehavior {
         ApplyForce (force);
     }
 
-    protected Decision BuildTreeFromCSVString(string treeStr)
-    {
-        // do a reverse pre-order traversal of comma separated string
-        string[] nodeStrings = treeStr.Split(new char[] {','});
-        //print(nodeStrings.Length);
-        Decision root = BuildTreeRecursiveHelper(nodeStrings, 0);
-        return root;
-    }
+	// creates the array that makes decisions for the state machine
+	protected void SetStateTransitions() {
+		stateMachine = new int[,] {
+			//							state 0:	state 1:	state 2:	state 3:	state 4:	state 5:	state 6:	state 7:
+			//		  					idling		wandering 	chasing		patrolling	following	slashing	burning		other		
+			/* 0: no cmd		*/	 { 0,			1,			2,			3,			4,			5,			6,			7 }, 	
+			/* cmd 1: wander	*/	 { 1,			1,			1,			1,			1,			1,			1,			1 }, 	
+			/* cmd 2: go to		*/	 { 2,			2,			2,			2,			2,			2,			2,			2 }, 	
+			/* cmd 3: patrol	*/	 { 3,			3,			3,			3,			3,			3,			3,			3 }, 	
+			/* cmd 4: folloW	*/	 { 4,			4,			4,			4,			4,			4,			4,			4 }, 	
+			/* cmd 5: slash		*/	 { 5,			5,			5,			5,			5,			5,			5,			5 }, 	
+			/* cmd 6: burn		*/	 { 6,			6,			6,			6,			6,			6,			6,			6 },	
+			/* cmd 7: stay		*/	 { 7,			7,			7,			7,			7,			7,			7,			7 },	
+		};
+	}
 
-    protected Decision BuildTreeRecursiveHelper(string[] nodeStrings, int idx)
-    {
-        // return null if invalid
-        if (idx >= nodeStrings.Length) return null;
-
-        // debug
-        print("BTRH " + nodeStrings[idx]);
-
-        // create the top node at this step in the recursion
-        Decision root = new Decision(nodeStrings[idx]);
-
-        // is this a branch or a leaf? Branches are denoted by a '?' as their first char
-        if (nodeStrings[idx][0] != '?')
-        {
-            // if this is not a branch, we are done
-            return root;
-        }
-
-        // index out of bounds checking
-        if (idx + 1 < nodeStrings.Length)
-        {
-            // add yes node
-            root.AddYesNode(BuildTreeRecursiveHelper(nodeStrings, idx + 1));
-        }
-        else
-        {
-            return root; // exit early if you run out of strings
-        }
-        // index out of bounds checking
-        if (idx + GetNumNodeChildren(root.Yes) + 1 < nodeStrings.Length)
-        {
-            // add no node
-            root.AddNoNode(BuildTreeRecursiveHelper(nodeStrings, idx + GetNumNodeChildren(root.Yes) + 1));
-        }
-        return root;
-    }
-
-    // checks how many nodes are children of this node (depth first recursive)
-    protected int GetNumNodeChildren(Decision n) {
-        if (n == null) return 0;
-        int yesChildren = GetNumNodeChildren(n.Yes);
-        int noChildren = GetNumNodeChildren(n.No);
-        return 1 + yesChildren + noChildren;
-    }
-
-    public string CreateTreeString(Decision rootNode)
-    {
-        if (rootNode == null) return "";
-        string returnStr = rootNode.Content;
-        if (rootNode.Yes != null) returnStr += "," + CreateTreeString(rootNode.Yes);
-        if (rootNode.No != null) returnStr += "," + CreateTreeString(rootNode.No);
-        return returnStr;
-    }
 }
