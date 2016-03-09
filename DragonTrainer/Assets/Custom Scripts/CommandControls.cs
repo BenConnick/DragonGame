@@ -69,7 +69,8 @@ public class CommandControls : MonoBehaviour {
         //move to a point
 	    if (Input.GetKeyDown(KeyCode.Alpha1)) {
             //dragon.Command(1); //tell the dragon our command
-            commandNum = 1; //update command in progress
+            //commandNum = 1; //update command in progress
+            commandNum = 2; //update command in progress -- 2 for demo purposes
             marker.transform.localScale = new Vector3(1.0f, 6.0f, 1.0f);//scale to indicate point
             marker.gameObject.GetComponent<Renderer>().material.color = new Color(0.5f, 0.2f, 0.6f); // idle tracking color
             prevInput = KeyCode.Alpha1; //record our keypress
@@ -104,11 +105,13 @@ public class CommandControls : MonoBehaviour {
             marker.gameObject.GetComponent<Renderer>().material.color = new Color(0.5f, 0.2f, 0.6f); // idle tracking color
             prevInput = KeyCode.Alpha5; //record our keypress
         }
+        //wander command for demo
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            commandNum = 6; //update command in progress
+            //commandNum = 6; //update command in progress
+            commandNum = 1; //update command in progress -- wander for demo
             marker.transform.localScale = new Vector3(1.0f, 6.0f, 1.0f);//scale to indicate point
-            marker.gameObject.GetComponent<Renderer>().material.color = new Color(0.5f, 0.2f, 0.6f); // idle tracking color
+            marker.gameObject.GetComponent<Renderer>().material.color = new Color(1.0f, 1.0f, 1.0f); // for wander
             prevInput = KeyCode.Alpha6; //record our keypress
         }
         if (Input.GetKeyDown(KeyCode.Q))
