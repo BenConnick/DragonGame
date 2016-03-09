@@ -22,7 +22,6 @@ public class ArrowFlight : MonoBehaviour {
 			GetComponent<Rigidbody> ().freezeRotation = true;
 			GetComponent<Collider> ().enabled = false;
 			transform.SetParent (evt.collider.transform);
-            print("flying = false");
         }
 	}
 	

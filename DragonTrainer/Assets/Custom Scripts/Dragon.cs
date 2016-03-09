@@ -140,12 +140,13 @@ public class Dragon : VehicleBehavior {
 		// reset force vector
 		Vector3 force = Vector3.zero;
 
+		// check what state the dragon is in
         switch (state)
         {
             // halt
             case 0:
                 // arrive at own position
-                force += seekWt * Arrival(transform.position);
+                //force += seekWt * Arrival(transform.position);
                 break;
             // go to target
             case 1:
