@@ -16,6 +16,7 @@ public class ArrowFlight : MonoBehaviour {
         if (evt.collider.name != "FPSController")
         {
             flying = false;
+			transform.position = transform.position + transform.forward;
 			GetComponent<Rigidbody> ().isKinematic = false;
 			GetComponent<Rigidbody> ().useGravity = false;
 			GetComponent<Rigidbody> ().velocity = Vector3.zero;
