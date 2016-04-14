@@ -20,6 +20,7 @@ public class EnemyBehavior : VehicleBehavior {
     //keep track of surroundings
     private GameObject[] enemies;
     private GameObject[] obstacles;
+    private ArrayList allEnemies = new ArrayList();
 
 	// for use with navmesh
 	bool nav = false;
@@ -31,7 +32,6 @@ public class EnemyBehavior : VehicleBehavior {
 		manager = FindObjectOfType<EnemyManager>();
 
         //populate the arrays
-        enemies = GameObject.FindGameObjectsWithTag("enemy");
         obstacles = GameObject.FindGameObjectsWithTag("obstacle");
 		nAgent = GetComponent<NavMeshAgent> ();
 		if (nAgent != null) nav = true;
@@ -51,12 +51,15 @@ public class EnemyBehavior : VehicleBehavior {
 			force += wanderWt * Wander ();
 			force += seekWt * Arrival (target.position);
 
-			//avoid each other
-			for (int i = 0; i < enemies.Length; i++) {
-				if (enemies [i].transform.position != transform.position) {
-					force += avoidWt * Avoid (enemies [i], distFromEnemies);
-				}
-			}
+            //avoid each other
+            foreach (GameObject e in manager.enemies)
+            {
+                if(e.transform.position != transform.position)
+                {
+                    force += avoidWt * Avoid(e, distFromEnemies);
+                }
+            }
+				
 
 			//avoid obstacles
 			for (int i = 0; i < obstacles.Length; i++) {

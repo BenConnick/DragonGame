@@ -13,11 +13,13 @@ public class EnemyManager : MonoBehaviour {
 
     //set manually in editor so the program understands
     public Object enemyPrefab;
-    private GameObject[] enemies;
+    private GameObject[] tempEnemies;
     public Object treePrefab;
 
-	// Use this for initialization
-	void Start () {
+    public ArrayList enemies = new ArrayList();
+
+    // Use this for initialization
+    void Start () {
 		waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
 		tower = GameObject.Find("Tower");
 		// assign waypoints indicies in order of closest to farthest from the tower
@@ -44,7 +46,14 @@ public class EnemyManager : MonoBehaviour {
             //create now
             GameObject.Instantiate(enemyPrefab, pos, Quaternion.identity);
         }
-	}
+
+        //find all enemies and put them into a public arraylist
+        tempEnemies = GameObject.FindGameObjectsWithTag("enemy");
+        foreach (GameObject go in tempEnemies)
+        {
+            enemies.Add(go);
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
