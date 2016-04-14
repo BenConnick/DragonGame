@@ -68,6 +68,8 @@ public class Dragon : VehicleBehavior {
 		SetStateTransitions(); // create state machine
 
         AddAction(1); // start wandering
+
+		print ("manager's public value numOfEnemies: " + manager.numOfEnemies);
 	}
 
     void Update()
