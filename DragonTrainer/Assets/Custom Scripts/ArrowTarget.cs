@@ -13,15 +13,16 @@ public class ArrowTarget : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		print(gameObject.name);
-		if(col.gameObject.name.Contains("Arrow"))
+		print(col.gameObject.name);
+		if(col.gameObject.name.Contains("Arrow") || col.gameObject.name.Contains("Dragon"))
 		{
 			if (particleEffect) {
-				GameObject.Instantiate(particleEffect,transform.position,transform.rotation);
+				ShowBlood ();
 			}
 			print (gameObject.name + " HIT");
 			if (destroyOnHit) {
-				Destroy(gameObject);
+				EnemyBehavior e = gameObject.GetComponent<EnemyBehavior>();
+				e.setHealth (0);
 			}
 		}
 	}
@@ -29,5 +30,9 @@ public class ArrowTarget : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	public void ShowBlood() {
+		GameObject.Instantiate(particleEffect,transform.position,transform.rotation);
 	}
 }

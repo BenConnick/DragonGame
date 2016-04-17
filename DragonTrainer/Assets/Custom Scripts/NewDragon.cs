@@ -52,9 +52,16 @@ public class NewDragon : VehicleBehavior {
 		enemies = GameObject.FindGameObjectsWithTag("enemy");
 		obstacles = GameObject.FindGameObjectsWithTag("obstacle");
 
-		target = player.transform; // set target player
+		//target = player.transform; // set target player
 
-		TakeAction (3);
+		TakeAction (States.CHASING);
+
+	}
+
+	void OnCollisionEnter(Collision col) {
+		if (col.gameObject.name.Contains ("Enemy")) {
+			col.gameObject.GetComponent<EnemyBehavior> ().setHealth (0);
+		}
 	}
 
 	void Update()
@@ -62,6 +69,23 @@ public class NewDragon : VehicleBehavior {
 		
 		// order followed, wait for new order
 		currentOrder = -1;
+
+		// acquire target
+		if (target == null) {
+			// find the closest enemy
+			Vector3 minDistVec = new Vector3(100000000000,0,0);
+			// store the closest
+			EnemyBehavior closest = null;
+
+			foreach (EnemyBehavior e in manager.enemies) {
+				if ((transform.position - e.transform.position).sqrMagnitude < (transform.position - minDistVec).sqrMagnitude) {
+					closest = e;
+					minDistVec = e.transform.position;
+				}
+			}
+
+			target = closest.transform;
+		}
 
 		// move around
 		base.Update();
@@ -86,7 +110,11 @@ public class NewDragon : VehicleBehavior {
 	}
 
 	protected void TakeAction(int action) {
-				state = (States)action;
+		state = (States)action;
+	}
+
+	protected void TakeAction(States action) {
+		state = action;
 	}
 
 	// move the Dragon
@@ -109,11 +137,6 @@ public class NewDragon : VehicleBehavior {
 			break;
 			// arrive / follow
 		case 2:
-			// NOTE TO SELF: set target
-			force += seekWt * Arrival(target.position);
-			break;
-			// try to intercept
-		case 3:
 			force += seekWt * Pursue(target.gameObject,1f);
 			break;
 			// if something goes wrong, wander

@@ -144,6 +144,7 @@ public class EnemyManager : MonoBehaviour {
 			EnemyBehavior e = (EnemyBehavior)enemies [i];
 			if (e.getHealth () <= 0.0f) {
 				print ("destroying " + e);
+				e.GetComponent<ArrowTarget> ().ShowBlood ();
 				enemies.Remove (e);
 				GameObject.Destroy (e.gameObject);
 			}
