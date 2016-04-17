@@ -57,7 +57,10 @@ public class EnemyManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// remove enemies with 0 HP
 		killEnemies();
+		// print wave over
+		if (enemies.Count <= 0) print("All enemies are dead");
 	}
 
 	public GameObject[] Waypoints {

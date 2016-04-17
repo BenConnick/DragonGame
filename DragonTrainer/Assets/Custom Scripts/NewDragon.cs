@@ -84,7 +84,7 @@ public class NewDragon : VehicleBehavior {
 				}
 			}
 
-			target = closest.transform;
+			if (closest != null) target = closest.transform;
 		}
 
 		// move around
@@ -137,7 +137,7 @@ public class NewDragon : VehicleBehavior {
 			break;
 			// arrive / follow
 		case 2:
-			force += seekWt * Pursue(target.gameObject,1f);
+			if (target != null) force += seekWt * Pursue(target.gameObject,1f);
 			break;
 			// if something goes wrong, wander
 		default:

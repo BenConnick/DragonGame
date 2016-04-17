@@ -30,6 +30,8 @@ public class Turret : MonoBehaviour {
 				}
 			}
 
+			if (closest == null) return;
+
 			//print("closest monster " + closest.id);
 
 			RaycastHit hit;
