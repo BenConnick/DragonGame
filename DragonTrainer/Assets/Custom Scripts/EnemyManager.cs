@@ -57,7 +57,7 @@ public class EnemyManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		killEnemies();
 	}
 
 	public GameObject[] Waypoints {
@@ -136,5 +136,15 @@ public class EnemyManager : MonoBehaviour {
 		// sort in-place (after this method, waypoints will be sorted)
 		QuickSortWaypoints(dists,0,dists.Length-1);
 		AssignSortedWaypointIndicies(waypoints);
+	}
+
+	//find the enemies with zero health and remove them from the arrayList
+	public void killEnemies() {
+		foreach(EnemyBehavior e in enemies){
+			if(e.getHealth() <= 0.0f)
+			{
+
+			}
+		}
 	}
 }

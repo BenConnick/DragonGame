@@ -11,6 +11,7 @@ public class EnemyBehavior : VehicleBehavior {
     public float avoidWt = 100.0f;
     public float distFromEnemies = 1.0f;
     public float distFromObstacles = 2.0f;
+	protected float health = 100.0f;
 	protected int finalWaypointIndex = 9;
 	protected int nextWaypointIndex = 8;
 	protected Transform target;
@@ -20,7 +21,7 @@ public class EnemyBehavior : VehicleBehavior {
     //keep track of surroundings
     private GameObject[] enemies;
     private GameObject[] obstacles;
-    private ArrayList allEnemies = new ArrayList();
+    //private ArrayList allEnemies = new ArrayList();
 
 	// for use with navmesh
 	bool nav = false;
@@ -90,5 +91,15 @@ public class EnemyBehavior : VehicleBehavior {
 				nextWaypointIndex = finalWaypointIndex;
 			}
 		}
+	}
+
+	public float getHealth()
+	{
+		return health;
+	}
+
+	public void setHealth(float value)
+	{
+		health = value;
 	}
 }
