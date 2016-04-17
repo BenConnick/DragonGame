@@ -2290,8 +2290,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1409373266}
+  - 114: {fileID: 1409373267}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2310,6 +2311,18 @@ Transform:
   - {fileID: 652356696}
   m_Father: {fileID: 0}
   m_RootOrder: 15
+--- !u!114 &1409373267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1409373265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f6a0f9f2b01b49b590a3a70a9b2541a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KillInterval: 1
 --- !u!1001 &1436132830
 Prefab:
   m_ObjectHideFlags: 0
