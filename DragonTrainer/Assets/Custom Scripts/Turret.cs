@@ -36,8 +36,9 @@ public class Turret : MonoBehaviour {
 
 			//Debug.DrawLine (transform.position, closest.transform.position,Color.red,0.5f);
 
-			Ray myRay = new Ray (transform.position, new Vector3(0,0,5) + closest.transform.position - transform.position);
+			Ray myRay = new Ray (transform.position, new Vector3(0,1,0) + closest.transform.position - transform.position);
 
+			// draw from pos to pos + dir*dist
 			Debug.DrawLine (transform.position, transform.position + myRay.direction*(closest.transform.position - transform.position).magnitude,Color.blue,0.5f);
 
 			Physics.Raycast (myRay, out hit, (closest.transform.position - transform.position).magnitude + 10);
@@ -46,8 +47,8 @@ public class Turret : MonoBehaviour {
 
 			if (hit.transform && hit.transform.gameObject.GetComponent<EnemyBehavior>() != null) {
 				// kill
-				//hit.transform.gameObject.GetComponent<EnemyBehavior>().hp -= 1000000;
-				print (hit.transform + "" + hit.transform.gameObject.GetComponent<EnemyBehavior>().id + " hit");
+				hit.transform.gameObject.GetComponent<EnemyBehavior>().setHealth(-1000000);
+				print (hit.transform + " hit");
 			} else {
 				//print (hit.transform + " hit (B)");
 			}

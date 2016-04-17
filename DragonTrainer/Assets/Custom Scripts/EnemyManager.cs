@@ -140,11 +140,14 @@ public class EnemyManager : MonoBehaviour {
 
 	//find the enemies with zero health and remove them from the arrayList
 	public void killEnemies() {
-		foreach(EnemyBehavior e in enemies){
-			if(e.getHealth() <= 0.0f)
-			{
-
+		for (int i=enemies.Count-1; i>=0; i--) {
+			EnemyBehavior e = (EnemyBehavior)enemies [i];
+			if (e.getHealth () <= 0.0f) {
+				print ("destroying " + e);
+				enemies.Remove (e);
+				GameObject.Destroy (e.gameObject);
 			}
 		}
+
 	}
 }
