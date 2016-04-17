@@ -51,7 +51,7 @@ public class EnemyManager : MonoBehaviour {
         tempEnemies = GameObject.FindGameObjectsWithTag("enemy");
         foreach (GameObject go in tempEnemies)
         {
-            enemies.Add(go);
+			enemies.Add(go.GetComponent<EnemyBehavior>());
         }
     }
 	

@@ -52,11 +52,11 @@ public class EnemyBehavior : VehicleBehavior {
 			force += seekWt * Arrival (target.position);
 
             //avoid each other
-            foreach (GameObject e in manager.enemies)
+            foreach (EnemyBehavior e in manager.enemies)
             {
                 if(e.transform.position != transform.position)
                 {
-                    force += avoidWt * Avoid(e, distFromEnemies);
+                    force += avoidWt * Avoid(e.gameObject, distFromEnemies);
                 }
             }
 				
