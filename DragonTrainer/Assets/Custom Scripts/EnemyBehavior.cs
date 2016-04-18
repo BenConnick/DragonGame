@@ -40,6 +40,15 @@ public class EnemyBehavior : VehicleBehavior {
 		target = GameObject.FindGameObjectWithTag ("tower").transform;
 
 	}
+
+	void Update() {
+		// check out of bounds
+		if (transform.position.y < -1000) health = 0;
+
+		// call the vehicle update
+		base.Update();
+	}
+
     protected override void CalcSteeringForce()
     {
 		if (nav) {
