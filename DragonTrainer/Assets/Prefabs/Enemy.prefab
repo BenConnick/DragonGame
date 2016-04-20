@@ -87,6 +87,11 @@ MonoBehaviour:
   avoidWt: 200
   distFromEnemies: 8
   distFromObstacles: 5
+  towerAttackRange: 25
+  dragonAttackRange: 5
+  lifeSpan: 0
+  damageToTower: 0
+  damageToDragon: 0
 --- !u!114 &11443230
 MonoBehaviour:
   m_ObjectHideFlags: 1
