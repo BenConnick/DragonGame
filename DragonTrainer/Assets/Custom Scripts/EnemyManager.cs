@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using ThreshEvolve;
+
 //ben version
 public class EnemyManager : MonoBehaviour {
 
 	GameObject[] waypoints;
 	GameObject tower;
+
+	//static int popSize = 20;				// Population size
+	static int chromLeng = 10;              // Number of bits in a chromosome
+	static int nChromVals = 1 << chromLeng; // Number of values for that many bits
 
     //can be set in the editor
     public int numOfEnemies = 10;
@@ -18,12 +24,30 @@ public class EnemyManager : MonoBehaviour {
 
     public ArrayList enemies = new ArrayList();
 
+	protected bool waitingForGeneration = true;
+
+	// Genetic algorithm bits
+	ThreshPop tp;
+	uint [] chroms;
+
     // Use this for initialization
     void Start () {
+
+		// GA STUFF
+		// *********************
+
+		// create population handler
+		tp = new ThreshPop(chromLeng, numOfEnemies, "test1.txt", 0.9, 0.1);
+
+		// chromosomes
+		chroms = new uint[numOfEnemies];
+
+		// *******************
+
 		waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
 		tower = GameObject.Find("Tower");
 		// assign waypoints indicies in order of closest to farthest from the tower
-		IndexWaypoints();
+		//IndexWaypoints();
 
         //create obstacles
         for (int i = 0; i < numOfObstacles; i++)
@@ -40,7 +64,7 @@ public class EnemyManager : MonoBehaviour {
         for (int i = 0; i < numOfEnemies; i++)
         {
             //create them at the far end of the path
-            Vector3 pos = new Vector3(Random.Range(-40, 100), 0.0f, Random.Range(300, 360));
+            Vector3 pos = new Vector3(Random.Range(-40, 100), 0.0f, Random.Range(250, 360));
             //put the enemy on top of terrain
             pos.y = Terrain.activeTerrain.SampleHeight(pos) + 1f;
             //create now
@@ -49,9 +73,11 @@ public class EnemyManager : MonoBehaviour {
 
         //find all enemies and put them into a public arraylist
         tempEnemies = GameObject.FindGameObjectsWithTag("enemy");
+		int z = 0;
         foreach (GameObject go in tempEnemies)
         {
 			enemies.Add(go.GetComponent<EnemyBehavior>());
+			chroms[z] = tp.CheckOut(); z++;
         }
     }
 	
@@ -60,7 +86,19 @@ public class EnemyManager : MonoBehaviour {
 		// remove enemies with 0 HP
 		killEnemies();
 		// print wave over
-		if (enemies.Count <= 0) print("All enemies are dead");
+		if (enemies.Count <= 0 && waitingForGeneration) {
+			print ("all ded");
+			waitingForGeneration = false;
+			// genetic algorithm time
+			SaveOldGeneration();
+			print ("saved");
+		}
+	}
+
+	protected void SaveOldGeneration() {
+		// Save the new population for next time.
+		// This would be done at the end of each "round" of your game.
+		tp.WritePop();
 	}
 
 	public GameObject[] Waypoints {
@@ -88,8 +126,7 @@ public class EnemyManager : MonoBehaviour {
 		return distances;
 	}
 
-
-	// auto assign waypoints their index by proximity to tower
+	/*// auto assign waypoints their index by proximity to tower
 	protected void QuickSortWaypoints(float[] arr, int left, int right) {
 
 		int i = left, j = right;
@@ -97,7 +134,7 @@ public class EnemyManager : MonoBehaviour {
 		GameObject tmpGO;
 		float pivot = arr[(left + right) / 2];
 		
-		/* partition */
+		 //partition 
 		while (i <= j) {	
 			while (arr[i] < pivot)		
 				i++;
@@ -119,7 +156,7 @@ public class EnemyManager : MonoBehaviour {
 		};
 		
 		
-		/* recursion */
+		// recursion 
 		if (left < j)
 			QuickSortWaypoints(arr, left, j);
 		if (i < right)
@@ -139,14 +176,18 @@ public class EnemyManager : MonoBehaviour {
 		// sort in-place (after this method, waypoints will be sorted)
 		QuickSortWaypoints(dists,0,dists.Length-1);
 		AssignSortedWaypointIndicies(waypoints);
-	}
+	}*/
 
 	//find the enemies with zero health and remove them from the arrayList
 	public void killEnemies() {
 		for (int i=enemies.Count-1; i>=0; i--) {
 			EnemyBehavior e = (EnemyBehavior)enemies [i];
 			if (e.getHealth () <= 0.0f) {
-				print ("destroying " + e);
+				//print ("destroying " + e);
+
+				// save for GA
+				tp.CheckIn(chroms[i], e.GetFitness());	
+
 				e.GetComponent<ArrowTarget> ().ShowBlood ();
 				enemies.Remove (e);
 				GameObject.Destroy (e.gameObject);

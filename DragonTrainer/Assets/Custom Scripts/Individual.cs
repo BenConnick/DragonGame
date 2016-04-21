@@ -12,7 +12,7 @@ namespace ThreshEvolve
 	public class Individual
 	{
 		double mutProb;	// Mutation probability used in Mutate()
-		int fitness;
+		float fitness;
 		uint chrom;		// up to 32-bit chromosome with an unsigned integer
 		int nBits;		// Number of bits actually used (starting w/ least sig)
 
@@ -26,7 +26,7 @@ namespace ThreshEvolve
 		}
 
 		// Overload called by ReadPop() with fitness from last generation
-		public Individual (uint newChrom, int nB, int fit, double pMut)
+		public Individual (uint newChrom, int nB, float fit, double pMut)
 		{
 			chrom = newChrom;
 			nBits = nB;
@@ -40,7 +40,7 @@ namespace ThreshEvolve
 			get { return this.chrom; }
 		}
 
-		public int Fitness
+		public float Fitness
 		{
 			get { return this.fitness; }
 			set { this.fitness = value; }

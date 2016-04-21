@@ -101,7 +101,7 @@ namespace ThreshEvolve
 		}
 
 		// Check in an individual that has now acquired a fitness value
-		public void CheckIn (uint chr, int fit)
+		public void CheckIn (uint chr, float fit)
 		{
 			// Make Individual
 			Individual NewDude = new Individual(chr, chromSize, fit, mutProb);

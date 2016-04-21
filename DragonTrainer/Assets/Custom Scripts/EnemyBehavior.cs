@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using ThreshEvolve;
+
 //ben version
 public class EnemyBehavior : VehicleBehavior {
 
@@ -12,7 +14,7 @@ public class EnemyBehavior : VehicleBehavior {
     public float distFromEnemies = 1.0f;
     public float distFromObstacles = 2.0f;
 
-    protected float damageOutput = 0.5f * Time.deltaTime; // Amount of damage dealt per second
+    protected float damageOutput = 0.5f; // Amount of damage dealt per second
     public float towerAttackRange = 30.0f;
     public float dragonAttackRange = 5.0f;
 
@@ -27,6 +29,11 @@ public class EnemyBehavior : VehicleBehavior {
     protected float lifeSpan = 0.0f;
     protected float damageToTower = 0.0f;
     protected float damageToDragon = 0.0f;
+
+	public float GetFitness() {
+		// fitness is a combination of the damage dealt and survival time diveded by an arbitrary number
+		return damageToTower + damageToDragon + (lifeSpan / 500);
+	}
 
     //keep track of surroundings
     private GameObject[] enemies;
@@ -132,14 +139,14 @@ public class EnemyBehavior : VehicleBehavior {
             //deal damage to tower here
 
             //record damage
-            damageToTower += damageOutput;
+			damageToTower += damageOutput * Time.deltaTime;
         }
         if (go.tag == "dragon")
         {
             //deal damage to tower here
 
             //record damage
-            damageToDragon += damageOutput;
+			damageToDragon += damageOutput * Time.deltaTime;
         }
     }
 

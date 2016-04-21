@@ -81,9 +81,6 @@ namespace ThreshEvolve
 			// Save the new population for next time.
 			// This would be done at the end of each "round" of your game.
 			tp.WritePop();
-
-			// Display new population on the Console to see what happened.
-			tp.DisplayPop(1);
 		}
 
 		/* Maps genotype (chromLeng-bit chromosome) to phenotype (float).

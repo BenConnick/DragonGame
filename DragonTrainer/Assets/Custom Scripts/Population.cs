@@ -14,7 +14,7 @@ namespace ThreshEvolve
 		int nChromVals;      	// Number of different chromosome values (2 to the nBits)
 		Individual [] dudes;	// Array of Individuals
 		int nDudes = 0;			// Current number of Individuals
-		int totFit = 0;      	// Total fitness for all individuals in population
+		float totFit = 0;      	// Total fitness for all individuals in population
 		double fitMean = 0.0;	// Mean fitness value
 		double fitStdDev = 0.0;	// Standard deviation of the fitness distribution
 		char[] delim = {' '};	// Used in ReadPop to split input lines
@@ -82,8 +82,8 @@ namespace ThreshEvolve
 		// Calculate fitness mean and standard deviation.  Called from DisplayPop()
 		private void PopStats()
 		{
-			int sumFit = 0;
-			int sumSqFit = 0;
+			float sumFit = 0;
+			float sumSqFit = 0;
 			for (int i = 0; i < popSize; i++)
 			{
 				sumFit += dudes[i].Fitness;
@@ -116,7 +116,7 @@ namespace ThreshEvolve
 		{
 			// Initialize to the first Individual in the array
 			int whereBest = 0;			// Initialze to the first one
-			int bestFit = dudes[0].Fitness;
+			float bestFit = dudes[0].Fitness;
 
 			// Walk through the rest to get the overall best one
 			for (int i = 1; i < nDudes; i++)
@@ -159,7 +159,7 @@ namespace ThreshEvolve
 			int roll = (int)Math.Floor(UnityEngine.Random.value*totFit);
 
 			// Walk through the population accumulating fitness
-			int accum = dudes[0].Fitness;	// Initialize to the first one
+			float accum = dudes[0].Fitness;	// Initialize to the first one
 			int iSel = 0;
 			// until the accumulator passes the rolled value
 			while (accum <= roll && iSel < nDudes-1)
@@ -224,7 +224,7 @@ namespace ThreshEvolve
 		}
 
 		// Set fitness of Individual at offset where to fitVal
-		public void SetFitness (int where, int fitVal)
+		public void SetFitness (int where, float fitVal)
 		{
 			dudes[where].Fitness = fitVal;
 		}
