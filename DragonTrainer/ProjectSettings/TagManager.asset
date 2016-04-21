@@ -9,6 +9,7 @@ TagManager:
   - tower
   - enemy
   - marker
+  - dragon
   layers:
   - Default
   - TransparentFX

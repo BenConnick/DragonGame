@@ -11,12 +11,22 @@ public class EnemyBehavior : VehicleBehavior {
     public float avoidWt = 100.0f;
     public float distFromEnemies = 1.0f;
     public float distFromObstacles = 2.0f;
+
+    protected float damageOutput = 0.5f * Time.deltaTime; // Amount of damage dealt per second
+    public float towerAttackRange = 30.0f;
+    public float dragonAttackRange = 5.0f;
+
 	protected float health = 100.0f;
 	protected int finalWaypointIndex = 9;
 	protected int nextWaypointIndex = 8;
 	protected Transform target;
 	protected NavMeshAgent nAgent;
 	EnemyManager manager;
+
+    //variables for determining fitness -- recorded over the span of their life
+    protected float lifeSpan = 0.0f;
+    protected float damageToTower = 0.0f;
+    protected float damageToDragon = 0.0f;
 
     //keep track of surroundings
     private GameObject[] enemies;
@@ -44,6 +54,18 @@ public class EnemyBehavior : VehicleBehavior {
 	void Update() {
 		// check out of bounds
 		if (transform.position.y < -1000) health = 0;
+
+        //update the total lifespan of the entity
+        lifeSpan += Time.deltaTime;
+
+        //attack if appropriate
+        //this code assumes we will use states to change our target at some point
+        Vector3 dist = (target.transform.position - transform.position);
+        if((target.tag == "tower" && dist.magnitude <= towerAttackRange) ||
+            (target.tag == "dragon" && dist.magnitude <= dragonAttackRange))
+        {
+            Attack(target.gameObject);
+        }
 
 		// call the vehicle update
 		base.Update();
@@ -101,6 +123,39 @@ public class EnemyBehavior : VehicleBehavior {
 			}
 		}
 	}
+
+    //Attack method -- deals damage and records amount of damage dealt
+    void Attack(GameObject go)
+    {
+        if (go.tag == "tower")
+        {
+            //deal damage to tower here
+
+            //record damage
+            damageToTower += damageOutput;
+        }
+        if (go.tag == "dragon")
+        {
+            //deal damage to tower here
+
+            //record damage
+            damageToDragon += damageOutput;
+        }
+    }
+
+    //a method to handle attacking -- this can be changed at anytime for a better solution
+    // this is a method that handles any collision between this object's rigidbody and any other
+    //rigidbody
+    //Perhaps we should also implement a state machine?
+    void oncollisionenter(Collision col)
+    {
+        //is this collision with the tower or the dragon?
+        //else we don't need to attack
+        if (col.gameObject.tag == "tower" || col.gameObject.tag == "dragon")
+        {
+            Attack(col.gameObject);
+        }
+    }
 
 	public float getHealth()
 	{
