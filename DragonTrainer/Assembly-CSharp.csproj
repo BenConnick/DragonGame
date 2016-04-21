@@ -54,8 +54,12 @@
      <Compile Include="Assets\Custom Scripts\Dragon.cs" />
      <Compile Include="Assets\Custom Scripts\EnemyBehavior.cs" />
      <Compile Include="Assets\Custom Scripts\EnemyManager.cs" />
+     <Compile Include="Assets\Custom Scripts\Individual.cs" />
      <Compile Include="Assets\Custom Scripts\NewDragon.cs" />
+     <Compile Include="Assets\Custom Scripts\Population.cs" />
+     <Compile Include="Assets\Custom Scripts\Program.cs" />
      <Compile Include="Assets\Custom Scripts\SmoothFollow.cs" />
+     <Compile Include="Assets\Custom Scripts\ThreshPop.cs" />
      <Compile Include="Assets\Custom Scripts\Turret.cs" />
      <Compile Include="Assets\Custom Scripts\Waypoint.cs" />
      <Compile Include="Assets\Custom Scripts\obstacleScript.cs" />
