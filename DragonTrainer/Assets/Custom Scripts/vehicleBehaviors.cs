@@ -118,14 +118,22 @@ abstract public class VehicleBehavior : MonoBehaviour {
 		return dv;
 	}
 
-	protected Vector3 Evade (GameObject F, float multiple)
+	protected Vector3 Evade (GameObject F, float safeDistance)
 	{
 		//find dv, desired velocity
-		Vector3 targetPos = F.transform.position + F.transform.forward;
-		dv = targetPos - transform.position;		
-		dv = dv.normalized * -maxSpeed; 	//scale by maxSpeed
+		//Vector3 targetPos = F.transform.position + F.transform.forward; // a point infront of the dragon (where it is looking)
+		Vector3 targetPos = F.transform.position;
+		Vector3 dist = targetPos - transform.position;		//not only distance, but also the direction we want to run toward
+
+		//if the dragon is too far away to worry about, exit the method
+		//if(dist.magnitude > safeDistance)
+		//{
+		//	return Vector3.zero;
+		//}
+		dv = dist.normalized * -maxSpeed; //* (safeDistance / dist.magnitude); 	//scale by maxSpeed
 		dv -= velocity;
 		dv.y = 0;					// only steer in the x/z plane
+		//print(dv);
 		return dv;
 	}
 

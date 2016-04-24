@@ -11,8 +11,10 @@ public class EnemyBehavior : VehicleBehavior {
 	public float seekWt = 10.0f;
     public float alignWt = 100.0f;
     public float avoidWt = 100.0f;
+	public float evadeWt = 40.0f;
     public float distFromEnemies = 1.0f;
     public float distFromObstacles = 2.0f;
+	private float distFromDragon = 40.0f;
 
     protected float damageOutput = 0.5f; // Amount of damage dealt per second
     public float towerAttackRange = 30.0f;
@@ -22,6 +24,7 @@ public class EnemyBehavior : VehicleBehavior {
 	protected int finalWaypointIndex = 9;
 	protected int nextWaypointIndex = 8;
 	protected Transform target;
+	protected GameObject dragon;
 	protected NavMeshAgent nAgent;
 	EnemyManager manager;
 
@@ -55,6 +58,7 @@ public class EnemyBehavior : VehicleBehavior {
 		if (nAgent != null) nav = true;
 
 		target = GameObject.FindGameObjectWithTag ("tower").transform;
+		dragon = GameObject.FindGameObjectWithTag ("dragon"); //maybe not the best, but it'll do the trick for now
 
 	}
 
@@ -86,8 +90,16 @@ public class EnemyBehavior : VehicleBehavior {
 		}
 		else {
 			Vector3 force = Vector3.zero;
+			//force += wanderWt * Wander ();
 			force += wanderWt * Wander ();
-			force += wanderWt * Wander ();
+
+			Vector3 dist = (dragon.transform.position - transform.position);
+			if(dist.magnitude <= distFromDragon)
+			{
+				print(dist.magnitude);
+				force += evadeWt * Evade(dragon, distFromDragon);
+			}
+
 			force += seekWt * Arrival (target.position);
 
             //avoid each other
