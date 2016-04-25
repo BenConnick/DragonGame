@@ -90,9 +90,9 @@ namespace ThreshEvolve
 			else
 			{	// Came from file so breed new one
 				Individual newDude;
-				if (nextCOut == 0)	// First one needs to be Best (elitism)
-					newDude = oldP.BestDude();
-				else
+				//if (nextCOut == 0)	// First one needs to be Best (elitism)
+					//newDude = oldP.BestDude();
+				//else
 					newDude = oldP.BreedDude();	// Rest are bred
 				nextCOut++;						// Count it
 				return newDude.Chrom;			// Return its chromosome

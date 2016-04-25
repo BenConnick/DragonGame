@@ -209,8 +209,8 @@ public class EnemyManager : MonoBehaviour {
 			enemies.Add(eb);
 			// GA
 			chroms[i] = tp.CheckOut();
-			// set phenotype
-			eb.avoidWt = (float)chroms[i];
+			// set phenotype (0<x<1024)^2 / 200
+			eb.avoidWt = (float)chroms[i]*chroms[i]/200.0f;
 		}
 	}
 }

@@ -155,6 +155,7 @@ namespace ThreshEvolve
 			// but not both.  Used both here just to test them.
 			Individual p1 = SelectRoul();				// Get 2 parents
 			Individual p2 = SelectTourn();
+			//Individual p2 = SelectRoul();
 			uint c1 = p1.Chrom;							// Extract their chromosomes
 			uint c2 = p2.Chrom;
 
@@ -175,6 +176,13 @@ namespace ThreshEvolve
 		// Uses totFit, which was accumulated when population was filled
 		public Individual SelectRoul()
 		{
+			// check for no total
+			if (totFit == 0) {
+				for (var i = 0; i < popSize; i++) {
+					totFit += dudes [i].Fitness;
+				}
+			}
+
 			// Roll a random integer from 0 to totFit - 1
 			int roll = (int)Math.Floor(UnityEngine.Random.value*totFit);
 
