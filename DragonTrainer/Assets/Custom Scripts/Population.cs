@@ -98,16 +98,36 @@ namespace ThreshEvolve
 		// individual
 		public void DisplayPop()
 		{
-			for (int i = 0; i < nDudes; i++)
+			/*for (int i = 0; i < nDudes; i++)
 			{
 				Console.WriteLine (dudes [i]);
-			}
+			}*/
 			PopStats();
-			UnityEngine.Debug.Log("Average fitness = " + fitMean);
 			//Console.WriteLine ("Average fitness = " + fitMean);
+			UnityEngine.Debug.Log("Average fitness = " + fitMean);
 			//Console.WriteLine ("Fitness standard deviation = " + fitStdDev);
+			UnityEngine.Debug.Log("Fitness standard deviation = " + fitStdDev);
 			Individual best = BestDude();
 			//Console.WriteLine ("Best dude: " + best.Chrom + " with fitness " + best.Fitness);
+			UnityEngine.Debug.Log("Best dude: " + best.Chrom + " with fitness " + best.Fitness);
+		}
+
+		// same as display pop but with a return value
+		public string GetPopStats() {
+			PopStats();
+			string outString = "";
+
+			Individual best = BestDude();
+			//Console.WriteLine ("Best dude: " + best.Chrom + " with fitness " + best.Fitness);
+			outString += ("Best individual: " + best.Chrom + " with fitness " + best.Fitness) + "\n";
+
+			//Console.WriteLine ("Average fitness = " + fitMean);
+			outString += ("Average fitness = " + fitMean) + "\n";
+
+			//Console.WriteLine ("Fitness standard deviation = " + fitStdDev);
+			outString += ("Fitness standard deviation = " + fitStdDev) + "\n";
+
+			return outString;
 		}
 
 		// Find the best (highest fitness) Individual in the population

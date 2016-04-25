@@ -63,7 +63,8 @@ namespace ThreshEvolve
 			StreamWriter outStream = new StreamWriter(popPath, false);
 			newP.WritePop(outStream);
 			outStream.Close();
-			outStream = new StreamWriter("generation"+generationCount,false);
+			outStream = new StreamWriter("generation"+generationCount+".txt",false);
+			outStream.Write (newP.GetPopStats ());
 			newP.WritePop(outStream);
 			outStream.Close();
 		}
