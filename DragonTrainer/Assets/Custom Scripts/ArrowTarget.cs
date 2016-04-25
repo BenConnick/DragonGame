@@ -13,13 +13,13 @@ public class ArrowTarget : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		print(col.gameObject.name);
+		//print(col.gameObject.name);
 		if(col.gameObject.name.Contains("Arrow") || col.gameObject.name.Contains("Dragon"))
 		{
 			if (particleEffect) {
 				ShowBlood ();
 			}
-			print (gameObject.name + " HIT");
+			//print (gameObject.name + " HIT");
 			if (destroyOnHit) {
 				EnemyBehavior e = gameObject.GetComponent<EnemyBehavior>();
 				e.setHealth (0);

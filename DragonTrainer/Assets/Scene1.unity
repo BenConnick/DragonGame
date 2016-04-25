@@ -1689,6 +1689,7 @@ Prefab:
     - target: {fileID: 6534820, guid: cb7124b4bbb75194d88efebde3937b0c, type: 2}
       propertyPath: m_Center.y
       value: 21.68
+      objectReference: {fileID: 0}
     - target: {fileID: 105246, guid: cb7124b4bbb75194d88efebde3937b0c, type: 2}
       propertyPath: m_TagString
       value: dragon
@@ -2483,7 +2484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6a0f9f2b01b49b590a3a70a9b2541a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  KillInterval: 5
+  KillInterval: 0.5
 --- !u!4 &1358436886
 Transform:
   m_ObjectHideFlags: 0
@@ -2604,7 +2605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6a0f9f2b01b49b590a3a70a9b2541a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  KillInterval: 10
+  KillInterval: 0.7823
 --- !u!1001 &1436132830
 Prefab:
   m_ObjectHideFlags: 0

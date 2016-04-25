@@ -76,8 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cc472fd49089546b7c36f1bee53e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 10
-  maxForce: 10
+  maxSpeed: 30
+  maxForce: 30
   mass: 1
   radius: 0.5
   gravity: 20000
@@ -89,9 +89,6 @@ MonoBehaviour:
   distFromObstacles: 5
   towerAttackRange: 25
   dragonAttackRange: 5
-  lifeSpan: 0
-  damageToTower: 0
-  damageToDragon: 0
 --- !u!114 &11443230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -156,6 +153,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_StepOffset
       value: 3.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: maxSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: maxForce
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

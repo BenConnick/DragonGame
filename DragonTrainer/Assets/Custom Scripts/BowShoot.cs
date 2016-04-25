@@ -38,7 +38,8 @@ public class BowShoot : MonoBehaviour {
 			bowCamera.GetComponent<Camera>().fieldOfView = minFOV + Mathf.Min (1,Mathf.Lerp(0,maxPullTime,pullTimer)) * (maxFOV - minFOV);
 		}
 		if (shootOnClick && Input.GetMouseButtonUp(0) && reloadTimer < 0 && pullTimer > 0) {
-			pForce = maxProjectileForce * Mathf.Min(1,pullTimer/maxPullTime);
+			//pForce = maxProjectileForce * Mathf.Min(1,pullTimer/maxPullTime); // used to be based on how long you pull
+			pForce = maxProjectileForce;
 			Shoot();
 			reloadTimer = reloadTime;
 			pullTimer = 0.0f;

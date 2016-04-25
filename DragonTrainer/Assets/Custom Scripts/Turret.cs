@@ -50,7 +50,7 @@ public class Turret : MonoBehaviour {
 			if (hit.transform && hit.transform.gameObject.GetComponent<EnemyBehavior>() != null) {
 				// kill
 				hit.transform.gameObject.GetComponent<EnemyBehavior>().setHealth(-1000000);
-				print (hit.transform + " hit");
+				//print (hit.transform + " hit");
 			} else {
 				//print (hit.transform + " hit (B)");
 			}

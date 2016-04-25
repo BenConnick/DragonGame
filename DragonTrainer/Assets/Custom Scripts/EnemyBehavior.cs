@@ -96,7 +96,6 @@ public class EnemyBehavior : VehicleBehavior {
 			Vector3 dist = (dragon.transform.position - transform.position);
 			if(dist.magnitude <= distFromDragon)
 			{
-				print(dist.magnitude);
 				force += evadeWt * Evade(dragon, distFromDragon);
 			}
 

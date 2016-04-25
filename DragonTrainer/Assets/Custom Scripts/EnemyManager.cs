@@ -24,8 +24,6 @@ public class EnemyManager : MonoBehaviour {
 
     public ArrayList enemies = new ArrayList();
 
-	protected bool waitingForGeneration = true;
-
 	// Genetic algorithm bits
 	ThreshPop tp;
 	uint [] chroms;
@@ -60,25 +58,13 @@ public class EnemyManager : MonoBehaviour {
             GameObject.Instantiate(treePrefab, pos, Quaternion.identity);
         }
 
-        //create the specified number of enemies
-        for (int i = 0; i < numOfEnemies; i++)
-        {
-            //create them at the far end of the path
-            Vector3 pos = new Vector3(Random.Range(-40, 100), 0.0f, Random.Range(250, 360));
-            //put the enemy on top of terrain
-            pos.y = Terrain.activeTerrain.SampleHeight(pos) + 1f;
-            //create now
-            GameObject.Instantiate(enemyPrefab, pos, Quaternion.identity);
-        }
+		createEnemies ();
 
         //find all enemies and put them into a public arraylist
-        tempEnemies = GameObject.FindGameObjectsWithTag("enemy");
-		int z = 0;
-        foreach (GameObject go in tempEnemies)
-        {
-			enemies.Add(go.GetComponent<EnemyBehavior>());
-			chroms[z] = tp.CheckOut(); z++;
-        }
+        //tempEnemies = GameObject.FindGameObjectsWithTag("enemy");
+
+		// unrelated
+		Screen.lockCursor = true;
     }
 	
 	// Update is called once per frame
@@ -86,12 +72,19 @@ public class EnemyManager : MonoBehaviour {
 		// remove enemies with 0 HP
 		killEnemies();
 		// print wave over
-		if (enemies.Count <= 0 && waitingForGeneration) {
+		if (enemies.Count <= 0) {
 			print ("all ded");
-			waitingForGeneration = false;
+
 			// genetic algorithm time
 			SaveOldGeneration();
 			print ("saved");
+
+			// make way
+			tp.MakeWayForNewGeneration();
+
+			// create new generation
+			CreateNewGeneration();
+			print ("new gen created");
 		}
 	}
 
@@ -99,6 +92,11 @@ public class EnemyManager : MonoBehaviour {
 		// Save the new population for next time.
 		// This would be done at the end of each "round" of your game.
 		tp.WritePop();
+		tp.DisplayPop (0);
+	}
+
+	protected void CreateNewGeneration() {
+		createEnemies ();
 	}
 
 	public GameObject[] Waypoints {
@@ -194,5 +192,25 @@ public class EnemyManager : MonoBehaviour {
 			}
 		}
 
+	}
+
+	void createEnemies() {
+		//create the specified number of enemies
+		for (int i = 0; i < numOfEnemies; i++)
+		{
+			//create them at the far end of the path
+			Vector3 pos = new Vector3(Random.Range(-40, 100), 0.0f, Random.Range(250, 360));
+			//put the enemy on top of terrain
+			pos.y = Terrain.activeTerrain.SampleHeight(pos) + 1f;
+			//create now
+			GameObject enemyGO = (GameObject)GameObject.Instantiate(enemyPrefab, pos, Quaternion.identity);
+			EnemyBehavior eb = enemyGO.GetComponent<EnemyBehavior> (); // shorthand
+			// add to list
+			enemies.Add(eb);
+			// GA
+			chroms[i] = tp.CheckOut();
+			// set phenotype
+			eb.avoidWt = (float)chroms[i];
+		}
 	}
 }

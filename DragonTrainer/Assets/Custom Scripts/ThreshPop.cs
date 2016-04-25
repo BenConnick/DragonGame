@@ -24,6 +24,7 @@ namespace ThreshEvolve
 		bool isGeneration0 = false;	// Assume there's a data file from a previous run
 		double xOverProb = 0.9;
 		double mutProb = 0.1;
+		int generationCount; // this should always start at 0
 
 		// Constructor sets up old and new populations
 		public ThreshPop (int cSize, int size, string path, double pXOver, double pMut)
@@ -60,6 +61,9 @@ namespace ThreshEvolve
 		public void WritePop()
 		{
 			StreamWriter outStream = new StreamWriter(popPath, false);
+			newP.WritePop(outStream);
+			outStream.Close();
+			outStream = new StreamWriter("generation"+generationCount,false);
 			newP.WritePop(outStream);
 			outStream.Close();
 		}
@@ -114,6 +118,14 @@ namespace ThreshEvolve
 		public bool AllCheckedIn()
 		{
 			return nextCIn == popSize;
+		}
+
+
+		public void MakeWayForNewGeneration() {
+			oldP = newP;
+			newP = new Population (popSize, chromSize, xOverProb, mutProb);
+			isGeneration0 = false;
+			generationCount++;
 		}
 
 	}
