@@ -210,7 +210,8 @@ public class EnemyManager : MonoBehaviour {
 			// GA
 			chroms[i] = tp.CheckOut();
 			// set phenotype (0<x<1024)^2 / 200
-			eb.avoidWt = (float)chroms[i]*chroms[i]/200.0f;
+			//eb.evadeWt = (float)chroms[i]*chroms[i]/200.0f;
+            eb.distFromDragon = (float)chroms[i] * chroms[i] / 200.0f;
 		}
 	}
 }

@@ -14,7 +14,7 @@ public class EnemyBehavior : VehicleBehavior {
 	public float evadeWt = 40.0f;
     public float distFromEnemies = 1.0f;
     public float distFromObstacles = 2.0f;
-	private float distFromDragon = 40.0f;
+	public float distFromDragon = 1.0f;
 
     protected float damageOutput = 0.5f; // Amount of damage dealt per second
     public float towerAttackRange = 30.0f;
