@@ -6,6 +6,16 @@ public class NewDragon : VehicleBehavior {
 	// state Enum
 	public enum States { IDLING, WANDERING, CHASING, PATROLLING, FOLLOWING_PLAYER, ATTACKING }
 
+	public enum Decisions { CLOSEST, TOWER, STAND }
+	protected float decisionInterval = 2.0f;
+	protected float timeSinceDecision = 0.0f;
+	public Decisions decision = Decisions.TOWER;
+
+	public int getDecision()
+	{
+		return (int)decision;
+	}
+
 	//Attributes 
 	public float wanderWt = 10.0f;
 	public float seekWt = 10.0f;
@@ -69,6 +79,16 @@ public class NewDragon : VehicleBehavior {
 		
 		// order followed, wait for new order
 		currentOrder = -1;
+
+		//update our decision timer
+		timeSinceDecision += Time.deltaTime;
+		//make a decision if it is time
+		if (timeSinceDecision >= decisionInterval){
+			//decide method
+			makeDecision();
+			//reset the timer
+			timeSinceDecision = 0.0f;
+		}
 
 		// acquire target
 		if (target == null) {
@@ -160,5 +180,15 @@ public class NewDragon : VehicleBehavior {
 
 	// creates the array that makes decisions for the state machine
 
+	//Dummy method for making a bayesian decision
+	protected void makeDecision()
+	{
+		//let's do something bayesian in here.
+
+		//update the HUD to reflect dragon's decision
+		player.GetComponent<CommandControls>().UpdateHUD((int)decision);
+		//tell me you've made a decision
+		UnityEngine.Debug.Log("Made a new decision after " + timeSinceDecision);
+	}
 
 }
