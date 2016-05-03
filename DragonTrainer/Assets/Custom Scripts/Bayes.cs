@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GolfDemo
+namespace BayesDemo
 {
 	/***** Global data types used in this class *****/
 
