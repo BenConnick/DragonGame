@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class CommandControls : MonoBehaviour {
 
-    public Dragon dragon; // set in inspector
+    public GameObject dragon; // set in inspector
     public Canvas canvas; //set in the inspector
     public GameObject[] command = new GameObject[3]; //the HUD elements that we will update
     public Texture[] comText = new Texture[6]; // the textures we will use on the HUD
@@ -67,7 +67,7 @@ public class CommandControls : MonoBehaviour {
         }
 
         //move to a point
-	    if (Input.GetKeyDown(KeyCode.Alpha1)) {
+	    /*if (Input.GetKeyDown(KeyCode.Alpha1)) {
             //dragon.Command(1); //tell the dragon our command
             //commandNum = 1; //update command in progress
             commandNum = 2; //update command in progress -- 2 for demo purposes
@@ -113,7 +113,7 @@ public class CommandControls : MonoBehaviour {
             marker.transform.localScale = new Vector3(1.0f, 6.0f, 1.0f);//scale to indicate point
             marker.gameObject.GetComponent<Renderer>().material.color = new Color(1.0f, 1.0f, 1.0f); // for wander
             prevInput = KeyCode.Alpha6; //record our keypress
-        }
+        }*/
         if (Input.GetKeyDown(KeyCode.Q))
         {
             print("Approval Key Pressed");
@@ -124,7 +124,7 @@ public class CommandControls : MonoBehaviour {
         }
 
         //put command through with a right click
-        if (Input.GetMouseButtonDown(1) && commandNum != 0)
+        /*if (Input.GetMouseButtonDown(1) && commandNum != 0)
         {
             dragon.Command(commandNum); //tell the dragon our command
             UpdateHUD(commandNum); // command went through, update HUD
@@ -144,11 +144,14 @@ public class CommandControls : MonoBehaviour {
 
             //change color of marker to indicate active command
             marker.gameObject.GetComponent<Renderer>().material.color = new Color(1.0f, 0.5f, 0.1f); //active command color
-        }
+        }*/
+
+		//Update the HUD based on the dragon's decision
+		//UpdateHUD(dragon.GetComponent<NewDragon>().getDecision());
 	}
 
     //for visual feedback on the HUD
-    void UpdateHUD(int input){
+    public void UpdateHUD(int input){
         Texture next; //stores what the next image should be
         Texture current = comText[input - 1]; //command 1 is at index 0
         for(int i = 0; i < command.Length; i++)
