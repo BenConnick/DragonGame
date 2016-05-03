@@ -1,3 +1,6 @@
+Best individual: 210 with fitness 0.0659682
+Average fitness = 0.0276963543891907
+Fitness standard deviation = 0.0167017828727518
 304 0.00152989
 391 0.00310551
 178 0.004619236
