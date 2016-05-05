@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using BayesDemo;
 
 public class NewDragon : VehicleBehavior {
 
@@ -24,11 +25,14 @@ public class NewDragon : VehicleBehavior {
 	public float distFromEnemies;
 	public float distFromObstacles;
 	public float maxDistFromPlayer;
+	public Transform tower;
 	public GameObject player;
 	protected Transform target;
 	protected NavMeshAgent nAgent;
 	protected int mode;
 	EnemyManager manager;
+
+	protected Bayes brain;
 
 	//keep track of surroundings
 	protected GameObject[] enemies;
@@ -58,13 +62,14 @@ public class NewDragon : VehicleBehavior {
 
 		manager = FindObjectOfType<EnemyManager>(); // get manager reference
 
-		//populate the arrays
-		enemies = GameObject.FindGameObjectsWithTag("enemy");
+		//populate the obstacles array
 		obstacles = GameObject.FindGameObjectsWithTag("obstacle");
 
-		//target = player.transform; // set target player
-
 		TakeAction (States.CHASING);
+
+		brain = new Bayes ();
+		brain.ReadObsTab ("dragonObservations.txt");
+		brain.BuildStats();
 
 	}
 
@@ -149,7 +154,6 @@ public class NewDragon : VehicleBehavior {
 		// halt
 		case 0:
 			// arrive at own position
-			//force += seekWt * Arrival(transform.position);
 			break;
 			// go to target
 		case 1:
@@ -183,12 +187,52 @@ public class NewDragon : VehicleBehavior {
 	//Dummy method for making a bayesian decision
 	protected void makeDecision()
 	{
+		float closestEnemyDistanceToDragon = (transform.position - target.position).magnitude;
+
+		EnemyBehavior closest;
+		Vector3 minDistVec = Vector3.zero;
+		// find clsoest to tower
+		foreach (EnemyBehavior e in manager.enemies) {
+			if ((tower.position - e.transform.position).sqrMagnitude < (tower.position - minDistVec).sqrMagnitude) {
+				closest = e;
+				minDistVec = e.transform.position;
+			}
+		}
+
+		float closestEnemyDistanceToTower = (tower.position - minDistVec).magnitude;
+
+		// get info about world
+		// find how many dudes are "near" the closest dude
+		int enemiesNearDragonEnemy = 0;
+		foreach (EnemyBehavior e in manager.enemies) {
+			if ((target.transform.position - e.transform.position).sqrMagnitude < 300) {
+				enemiesNearDragonEnemy++;
+			}
+		}
+
+		int enemiesNearTowerEnemy = 0;
+		foreach (EnemyBehavior e in manager.enemies) {
+			if ((target.transform.position - e.transform.position).sqrMagnitude < 300) {
+				enemiesNearTowerEnemy++;
+			}
+		}
+
+
 		//let's do something bayesian in here.
+		//brain.Decide(/*closest to dragon, numbydragon, closest to tower, num by tower*/);
+		bool goHome = brain.Decide(
+			closestEnemyDistanceToDragon, 
+			enemiesNearDragonEnemy, 
+			closestEnemyDistanceToTower, 
+			enemiesNearTowerEnemy);
+		print (goHome);
 
 		//update the HUD to reflect dragon's decision
 		player.GetComponent<CommandControls>().UpdateHUD((int)decision);
 		//tell me you've made a decision
 		UnityEngine.Debug.Log("Made a new decision after " + timeSinceDecision);
+
+
 	}
 
 }

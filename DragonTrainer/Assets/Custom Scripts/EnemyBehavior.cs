@@ -33,6 +33,21 @@ public class EnemyBehavior : VehicleBehavior {
     protected float damageToTower = 0.0f;
     protected float damageToDragon = 0.0f;
 
+	protected float dragonDist;
+	protected float towerDist;
+
+	public float DragonDist {
+		get {
+			return dragonDist;
+		}
+	}
+
+	public float TowerDist {
+		get {
+			return towerDist;
+		}
+	}
+
 	public float GetFitness() {
 		// fitness is a combination of the damage dealt and survival time diveded by an arbitrary number
 		return damageToTower + damageToDragon + (lifeSpan / 500);
@@ -72,11 +87,16 @@ public class EnemyBehavior : VehicleBehavior {
         //attack if appropriate
         //this code assumes we will use states to change our target at some point
         Vector3 dist = (target.transform.position - transform.position);
+		towerDist = dist.magnitude;
         if((target.tag == "tower" && dist.magnitude <= towerAttackRange) ||
             (target.tag == "dragon" && dist.magnitude <= dragonAttackRange))
         {
             Attack(target.gameObject);
         }
+
+		// oh and also calculate the dist to the dragon ... awkward...
+		dist = (dragon.transform.position - transform.position);
+		dragonDist = dist.magnitude;
 
 		// call the vehicle update
 		base.Update();

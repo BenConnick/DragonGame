@@ -5,8 +5,10 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace BayesDemo
 {
@@ -25,7 +27,7 @@ namespace BayesDemo
 		public int numByTower;
 		public float closestToDragon;
 		public int numByDragon;
-		public bool chooseTargetClosestToTower;
+		public bool chooseTargetClosestToTowerGood;
 	}
 
 	/*********************************************************************/
@@ -158,7 +160,7 @@ namespace BayesDemo
 
 		// Add an observation to the list.
 		// Used when reading the file and when adding new observations on the fly
-		public void AddObs (float closestToDragon, int numByDragon, float closestToTower, int numByTower, bool chooseTargetClosestToTower)
+		public void AddObs (float closestToDragon, int numByDragon, float closestToTower, int numByTower, bool chooseTargetClosestToTowerGood)
 		{
 			// Build an Observation struct
 			Observation obs;
@@ -166,7 +168,7 @@ namespace BayesDemo
 			obs.numByDragon = numByDragon;
 			obs.closestToTower = closestToTower;
 			obs.numByTower = numByTower;
-			obs.chooseTargetClosestToTower = chooseTargetClosestToTower;
+			obs.chooseTargetClosestToTowerGood = chooseTargetClosestToTowerGood;
 
 			// Add it to the List
 			obsTab.Add (obs);
@@ -183,7 +185,7 @@ namespace BayesDemo
 						wtr.Write (" {0}", obs.numByDragon);
 						wtr.Write (" {0}", obs.closestToTower);
 						wtr.Write (" {0}", obs.numByTower);
-						wtr.WriteLine (" {0}", obs.chooseTargetClosestToTower);
+						wtr.WriteLine (" {0}", obs.chooseTargetClosestToTowerGood);
 					}
 				}
 			}
@@ -204,7 +206,7 @@ namespace BayesDemo
 				Console.Write (" " + obs.numByDragon);
 				Console.Write ("  " + obs.closestToDragon);
 				Console.Write ("  {0,-5}", obs.numByTower);
-				Console.WriteLine (" | {0,-5}", obs.chooseTargetClosestToTower);
+				Console.WriteLine (" | {0,-5}", obs.chooseTargetClosestToTowerGood);
 			}
 		}
 
@@ -229,7 +231,7 @@ namespace BayesDemo
 			// Accumulate all the counts and sums
 			foreach (Observation obs in obsTab) {
 				// Do this once
-				int targetTower = obs.chooseTargetClosestToTower ? 0 : 1;
+				int targetTower = obs.chooseTargetClosestToTowerGood ? 0 : 1;
 
 				dragonSum [targetTower] += obs.closestToDragon;
 				dragonSumSq [targetTower] += obs.closestToDragon * obs.closestToDragon;
@@ -260,6 +262,16 @@ namespace BayesDemo
 			towerMean [1] = Mean (towerSum [1], choseTowerCt [1]);
 			towerStdDev [0] = StdDev (towerSumSq [0], towerSum [0], choseTowerCt [0]);
 			towerStdDev [1] = StdDev (towerSumSq [1], towerSum [1], choseTowerCt [1]);
+
+			numDragonMean [0] = Mean (numDragonSum [0], choseTowerCt [0]);
+			numDragonMean [1] = Mean (numDragonSum [1], choseTowerCt [1]);
+			numDragonStdDev [0] = StdDev (numDragonSumSq [0], numDragonSum [0], choseTowerCt [0]);
+			numDragonStdDev [1] = StdDev (numDragonSumSq [1], numDragonSum [1], choseTowerCt [1]);
+
+			numTowerMean [0] = Mean (numTowerSum [0], choseTowerCt [0]);
+			numTowerMean [1] = Mean (numTowerSum [1], choseTowerCt [1]);
+			numTowerStdDev [0] = StdDev (numTowerSumSq [0], numTowerSum [0], choseTowerCt [0]);
+			numTowerStdDev [1] = StdDev (numTowerSumSq [1], numTowerSum [1], choseTowerCt [1]);
 
 			//CalcProps (windyCt, choseTowerCt, windyPrp);
 
@@ -330,12 +342,11 @@ namespace BayesDemo
 		double CalcBayes (float closestToTower, int numByTower, float closestToDragon, int numByDragon, bool choseTower)
 		{
 			int playOff = choseTower ? 0 : 1;
-			double like = /*outlookPrp [(int)outlook, playOff] */
+			double like =
 				GauProb (dragonMean [playOff], dragonStdDev [playOff], closestToDragon) *
 				GauProb (towerMean [playOff], towerStdDev [playOff], closestToTower) *
 				GauProb (numDragonMean [playOff], numDragonStdDev [playOff], numByDragon) *
 				GauProb (numTowerMean [playOff], numTowerStdDev [playOff], numByTower) *
-				/*windyPrp [windy ? 0 : 1, playOff] */
 				choseTowerPrp [playOff];
 			return like;
 		}
@@ -353,7 +364,7 @@ namespace BayesDemo
 
 			/* To turn off output, remove this end comment -> */
 			double yesNno = playYes + playNo;
-			Console.WriteLine ("playYes: {0}", playYes);	// Use scientifice notation
+			Debug.Log ("playYes: {0}" + playYes);	// Use scientifice notation
 			Console.WriteLine ("playNo:  {0}", playNo);		// for very small numbers
 			Console.WriteLine ("playYes Normalized: {0,6:F4}", playYes / yesNno);
 			Console.WriteLine ("playNo  Normalized: {0,6:F4}", playNo / yesNno);
