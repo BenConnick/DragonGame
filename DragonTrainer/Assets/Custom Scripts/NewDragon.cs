@@ -97,19 +97,10 @@ public class NewDragon : VehicleBehavior {
 
 		// acquire target
 		if (target == null) {
-			// find the closest enemy
-			Vector3 minDistVec = new Vector3(100000000000,0,0);
-			// store the closest
-			EnemyBehavior closest = null;
-
-			foreach (EnemyBehavior e in manager.enemies) {
-				if ((transform.position - e.transform.position).sqrMagnitude < (transform.position - minDistVec).sqrMagnitude) {
-					closest = e;
-					minDistVec = e.transform.position;
-				}
-			}
-
-			if (closest != null) target = closest.transform;
+			//decide method
+			makeDecision();
+			//reset the timer
+			timeSinceDecision = 0.0f;
 		}
 
 		// move around
@@ -187,13 +178,29 @@ public class NewDragon : VehicleBehavior {
 	//Dummy method for making a bayesian decision
 	protected void makeDecision()
 	{
-		float closestEnemyDistanceToDragon = (transform.position - target.position).magnitude;
+		// find the closest enemy to dragon
+		Vector3 minDistVec = new Vector3(100000000000,0,0);
+		// store the closest
+		EnemyBehavior closestToDrag = null;
+		
+		foreach (EnemyBehavior e in manager.enemies) {
+			if ((transform.position - e.transform.position).sqrMagnitude < (transform.position - minDistVec).sqrMagnitude) {
+				closestToDrag = e;
+				minDistVec = e.transform.position;
+			}
+		}
+		
+		//if (closestToDrag != null) target = closestToDrag.transform;
 
-		EnemyBehavior closest;
-		Vector3 minDistVec = Vector3.zero;
+		float closestEnemyDistanceToDragon = (transform.position - closestToDrag.transform.position).magnitude;
+
+
+
+		EnemyBehavior closest = (EnemyBehavior)manager.enemies[0];
+		minDistVec = new Vector3(1.0f, 0.0f, 0.0f) * 40.0f;
 		// find clsoest to tower
 		foreach (EnemyBehavior e in manager.enemies) {
-			if ((tower.position - e.transform.position).sqrMagnitude < (tower.position - minDistVec).sqrMagnitude) {
+			if ((tower.position - e.transform.position).sqrMagnitude < (tower.position - closest.transform.position).sqrMagnitude) {
 				closest = e;
 				minDistVec = e.transform.position;
 			}
@@ -205,14 +212,14 @@ public class NewDragon : VehicleBehavior {
 		// find how many dudes are "near" the closest dude
 		int enemiesNearDragonEnemy = 0;
 		foreach (EnemyBehavior e in manager.enemies) {
-			if ((target.transform.position - e.transform.position).sqrMagnitude < 300) {
+			if ((closestToDrag.transform.position - e.transform.position).sqrMagnitude < 300) {
 				enemiesNearDragonEnemy++;
 			}
 		}
-
+		
 		int enemiesNearTowerEnemy = 0;
 		foreach (EnemyBehavior e in manager.enemies) {
-			if ((target.transform.position - e.transform.position).sqrMagnitude < 300) {
+			if ((closest.transform.position - e.transform.position).sqrMagnitude < 300) {
 				enemiesNearTowerEnemy++;
 			}
 		}
@@ -226,6 +233,11 @@ public class NewDragon : VehicleBehavior {
 			closestEnemyDistanceToTower, 
 			enemiesNearTowerEnemy);
 		print (goHome);
+
+		//now dragon decides which enemy to pursue -- if true, enemy closest to tower
+		//-- if false, enemy closest to dragon
+		if (goHome) { target = closest.transform;}
+		else { target = closestToDrag.transform;}
 
 		//update the HUD to reflect dragon's decision
 		player.GetComponent<CommandControls>().UpdateHUD((int)decision);
