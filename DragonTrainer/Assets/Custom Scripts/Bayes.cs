@@ -27,6 +27,7 @@ namespace BayesDemo
 		public int numByTower;
 		public float closestToDragon;
 		public int numByDragon;
+		public float dragonDistFromTower;
 		public bool chooseTargetClosestToTowerGood;
 	}
 
@@ -70,6 +71,12 @@ namespace BayesDemo
 		int[] numDragonSumSq = new int[2];
 		double[] numDragonMean = new double[2];
 		double[] numDragonStdDev = new double[2];
+
+		// tertiary condition continuous
+		float[] dragonDistToTowerSum = new float[2];
+		float[] dragonDistToTowerSumSq = new float[2];
+		double[] dragonDistToTowerMean = new double[2];
+		double[] dragonDistToTowerStdDev = new double[2];
 
 		int[] choseTowerCt = new int[2];
 		double[] choseTowerPrp = new double[2];
@@ -131,6 +138,11 @@ namespace BayesDemo
 				numDragonSumSq [i] = 0;
 			}
 
+			for (int i = 2; i < 2; i++) {
+				dragonDistToTowerSum [i] = 0;
+				dragonDistToTowerSumSq [i] = 0;
+			}
+
 			for (int i = 0; i < 2; i++) {
 				choseTowerCt [i] = 0;
 			}
@@ -148,7 +160,7 @@ namespace BayesDemo
 
 						// Map strings to correct data types for conditions & action
 						// and Add the observation to List obsTab
-						AddObs (float.Parse (lineAra [0]), int.Parse (lineAra [1]), float.Parse (lineAra [2]), int.Parse (lineAra [3]), (lineAra [4] == "True" ? true : false));
+						AddObs (float.Parse (lineAra [0]), int.Parse (lineAra [1]), float.Parse (lineAra [2]), int.Parse (lineAra [3]), float.Parse(lineAra[4]), (lineAra [5] == "True" ? true : false));
 					}
 				}
 			}
@@ -160,7 +172,7 @@ namespace BayesDemo
 
 		// Add an observation to the list.
 		// Used when reading the file and when adding new observations on the fly
-		public void AddObs (float closestToDragon, int numByDragon, float closestToTower, int numByTower, bool chooseTargetClosestToTowerGood)
+		public void AddObs (float closestToDragon, int numByDragon, float closestToTower, int numByTower, float dragonDistToTower, bool chooseTargetClosestToTowerGood)
 		{
 			// Build an Observation struct
 			Observation obs;
@@ -168,6 +180,7 @@ namespace BayesDemo
 			obs.numByDragon = numByDragon;
 			obs.closestToTower = closestToTower;
 			obs.numByTower = numByTower;
+			obs.dragonDistFromTower = dragonDistToTower;
 			obs.chooseTargetClosestToTowerGood = chooseTargetClosestToTowerGood;
 
 			// Add it to the List
@@ -185,6 +198,7 @@ namespace BayesDemo
 						wtr.Write (" {0}", obs.numByDragon);
 						wtr.Write (" {0}", obs.closestToTower);
 						wtr.Write (" {0}", obs.numByTower);
+						wtr.Write (" {0}", obs.dragonDistFromTower);
 						wtr.WriteLine (" {0}", obs.chooseTargetClosestToTowerGood);
 					}
 				}
@@ -206,6 +220,7 @@ namespace BayesDemo
 				Console.Write (" " + obs.numByDragon);
 				Console.Write ("  " + obs.closestToDragon);
 				Console.Write ("  {0,-5}", obs.numByTower);
+				Console.Write ("  {0,-5}", obs.dragonDistFromTower);
 				Console.WriteLine (" | {0,-5}", obs.chooseTargetClosestToTowerGood);
 			}
 		}
@@ -245,7 +260,8 @@ namespace BayesDemo
 				numTowerSum [targetTower] += obs.numByTower;
 				numTowerSumSq [targetTower] += obs.numByTower * obs.numByTower;
 
-
+				dragonDistToTowerSum [targetTower] += obs.dragonDistFromTower;
+				dragonDistToTowerSumSq [targetTower] += obs.dragonDistFromTower * obs.dragonDistFromTower;
 
 				choseTowerCt [targetTower]++;
 			}
@@ -272,6 +288,11 @@ namespace BayesDemo
 			numTowerMean [1] = Mean (numTowerSum [1], choseTowerCt [1]);
 			numTowerStdDev [0] = StdDev (numTowerSumSq [0], numTowerSum [0], choseTowerCt [0]);
 			numTowerStdDev [1] = StdDev (numTowerSumSq [1], numTowerSum [1], choseTowerCt [1]);
+
+			dragonDistToTowerMean [0] = Mean (dragonDistToTowerSum [0], choseTowerCt [0]);
+			dragonDistToTowerMean [1] = Mean (dragonDistToTowerSum [1], choseTowerCt [1]);
+			dragonDistToTowerStdDev [0] = Mean (dragonDistToTowerSumSq [0], choseTowerCt [0]);
+			dragonDistToTowerStdDev [1] = Mean (dragonDistToTowerSumSq [1], choseTowerCt [1]);
 
 			//CalcProps (windyCt, choseTowerCt, windyPrp);
 
@@ -339,7 +360,7 @@ namespace BayesDemo
 		// For each possible action value, call this with a specific set of four
 		// condition values, and pick the action that returns the highest
 		// likelihood as the most likely action to take, given the conditions.
-		double CalcBayes (float closestToTower, int numByTower, float closestToDragon, int numByDragon, bool choseTower)
+		double CalcBayes (float closestToTower, int numByTower, float closestToDragon, int numByDragon, float dragonDistToTower, bool choseTower)
 		{
 			int playOff = choseTower ? 0 : 1;
 			double like =
@@ -347,6 +368,7 @@ namespace BayesDemo
 				GauProb (towerMean [playOff], towerStdDev [playOff], closestToTower) *
 				GauProb (numDragonMean [playOff], numDragonStdDev [playOff], numByDragon) *
 				GauProb (numTowerMean [playOff], numTowerStdDev [playOff], numByTower) *
+				GauProb (dragonDistToTowerMean[playOff], dragonDistToTowerStdDev[playOff], dragonDistToTower) *	
 				choseTowerPrp [playOff];
 			return like;
 		}
@@ -355,11 +377,11 @@ namespace BayesDemo
 		// Returns true if decision is to play, false o/w
 		// Can turn on/off diagnostic output to Console by playing with "*/"
 		//public bool Decide (Outlook ol, int closestToDragon, int hum, bool windy)
-		public bool Decide (float closestToDragon, int numByDragon, float closestToTower, int numByTower)
+		public bool Decide (float closestToDragon, int numByDragon, float closestToTower, int numByTower, float dragonDistToTower)
 		{
 			//double playYes = CalcBayes (ol, closestToDragon, hum, windy, true);
-			double playYes = CalcBayes (closestToTower, numByTower, closestToDragon, numByDragon, true);
-			double playNo = CalcBayes (closestToTower, numByTower, closestToDragon, numByDragon, false);
+			double playYes = CalcBayes (closestToTower, numByTower, closestToDragon, numByDragon, dragonDistToTower, true);
+			double playNo = CalcBayes (closestToTower, numByTower, closestToDragon, numByDragon, dragonDistToTower, false);
 			//double playNo = CalcBayes (ol, closestToDragon, hum, windy, false);
 
 			/* To turn off output, remove this end comment -> */
