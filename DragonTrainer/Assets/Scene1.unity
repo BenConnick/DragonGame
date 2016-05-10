@@ -1694,7 +1694,8 @@ Prefab:
       propertyPath: m_TagString
       value: dragon
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11450916, guid: cb7124b4bbb75194d88efebde3937b0c, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: cb7124b4bbb75194d88efebde3937b0c, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &886548519
@@ -3593,8 +3594,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49c066a35afa948dbb8a77033da50ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 12
-  maxForce: 10
+  maxSpeed: 30
+  maxForce: 200
   mass: 5
   radius: 0.5
   gravity: 200

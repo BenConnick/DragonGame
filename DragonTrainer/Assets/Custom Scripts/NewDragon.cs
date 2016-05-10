@@ -12,6 +12,8 @@ public class NewDragon : VehicleBehavior {
 	protected float timeSinceDecision = 0.0f;
 	public Decisions decision = Decisions.TOWER;
 
+	protected Observation[] lastFourDecisions;
+
 	public int getDecision()
 	{
 		return (int)decision;
@@ -66,6 +68,8 @@ public class NewDragon : VehicleBehavior {
 		obstacles = GameObject.FindGameObjectsWithTag("obstacle");
 
 		TakeAction (States.CHASING);
+
+		lastFourDecisions = new Observation[4];
 
 		brain = new Bayes ();
 		brain.ReadObsTab ("dragonObservations.txt");
@@ -224,15 +228,34 @@ public class NewDragon : VehicleBehavior {
 			}
 		}
 
+		float distToTower = Vector3.Distance (transform.position, tower.position);
 
-		//let's do something bayesian in here.
+
+
 		//brain.Decide(/*closest to dragon, numbydragon, closest to tower, num by tower*/);
 		bool goHome = brain.Decide(
 			closestEnemyDistanceToDragon, 
 			enemiesNearDragonEnemy, 
-			closestEnemyDistanceToTower, 
-			enemiesNearTowerEnemy);
+			closestEnemyDistanceToTower,
+			enemiesNearTowerEnemy,
+			distToTower);
 		print (goHome);
+
+		// save this decision
+		for (var i=3; i>-1; i--) {
+			if (i < 3)
+				lastFourDecisions [i + 1] = lastFourDecisions [i];
+			if (i == 0) {
+				lastFourDecisions [0] = new Observation ();
+
+				lastFourDecisions[0].closestToDragon = closestEnemyDistanceToDragon;
+				lastFourDecisions[0].numByDragon = enemiesNearDragonEnemy;
+				lastFourDecisions[0].closestToTower = closestEnemyDistanceToTower;
+				lastFourDecisions[0].numByTower = enemiesNearTowerEnemy;
+				lastFourDecisions[0].dragonDistFromTower = distToTower;
+				lastFourDecisions[0].chooseTargetClosestToTowerGood = goHome;
+			}
+		}
 
 		//now dragon decides which enemy to pursue -- if true, enemy closest to tower
 		//-- if false, enemy closest to dragon
@@ -240,11 +263,47 @@ public class NewDragon : VehicleBehavior {
 		else { target = closestToDrag.transform;}
 
 		//update the HUD to reflect dragon's decision
-		player.GetComponent<CommandControls>().UpdateHUD((int)decision);
+		player.GetComponent<CommandControls>().UpdateHUD(goHome ? 1 : 2);
 		//tell me you've made a decision
 		UnityEngine.Debug.Log("Made a new decision after " + timeSinceDecision);
 
 
+	}
+
+	public void approve(int idx=3) {
+		idx--; // convert from 1-indexed to -indexed
+		// shorthand
+		Observation o = lastFourDecisions[idx];
+
+		/*closest to dragon, numbydragon, closest to tower, num by tower, drag dist to tower, good to go to tower?*/
+		brain.AddObs (
+			o.closestToDragon,
+			o.numByDragon,
+			o.closestToTower,
+			o.numByTower,
+			o.dragonDistFromTower,
+			o.chooseTargetClosestToTowerGood
+		);
+
+		print ("approved");
+	}
+
+	public void disapprove(int idx=3) {
+		idx--; // convert from 1-indexed to -indexed
+		// shorthand
+		Observation o = lastFourDecisions[idx];
+
+		/*closest to dragon, numbydragon, closest to tower, num by tower, drag dist to tower, good to go to tower?*/
+		brain.AddObs (
+			o.closestToDragon,
+			o.numByDragon,
+			o.closestToTower,
+			o.numByTower,
+			o.dragonDistFromTower,
+			!o.chooseTargetClosestToTowerGood
+		);
+
+		print ("disapproved");
 	}
 
 }

@@ -10,9 +10,11 @@ using UnityEngine.UI;
 public class CommandControls : MonoBehaviour {
 
     public GameObject dragon; // set in inspector
+	protected NewDragon dragonScript;
     public Canvas canvas; //set in the inspector
     public GameObject[] command = new GameObject[3]; //the HUD elements that we will update
     public Texture[] comText = new Texture[6]; // the textures we will use on the HUD
+	public Image highlight; // set in inspector
 
     int commandNum = 0; //stores what number command is in progress
 
@@ -49,6 +51,8 @@ public class CommandControls : MonoBehaviour {
 
         marker = GameObject.FindGameObjectWithTag("marker");
         marker.gameObject.GetComponent<Renderer>().material.color = new Color(0.5f, 0.2f, 0.6f); // idle tracking color -- purple for high contrast
+
+		dragonScript = dragon.GetComponent<NewDragon> ();
 	}
 	
 	// Update is called once per frame
@@ -114,13 +118,43 @@ public class CommandControls : MonoBehaviour {
             marker.gameObject.GetComponent<Renderer>().material.color = new Color(1.0f, 1.0f, 1.0f); // for wander
             prevInput = KeyCode.Alpha6; //record our keypress
         }*/
+
+		if (Input.GetKeyDown(KeyCode.Alpha1)) {
+			//dragon.Command(1); //tell the dragon our command
+			commandNum = 1; //update command in progress
+			//commandNum = 2; //update command in progress -- 2 for demo purposes
+			prevInput = KeyCode.Alpha1; //record our keypress
+		}
+		//patrol an area
+		if (Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			commandNum = 2; //update command in progress
+
+			prevInput = KeyCode.Alpha2; //record our keypress
+		}
+		//target an enemy
+		if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			commandNum = 3; //update command in progress
+
+			prevInput = KeyCode.Alpha3; //record our keypress
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			commandNum = 4; //update command in progress
+
+			prevInput = KeyCode.Alpha4; //record our keypress
+		}
+		highlight.rectTransform.localPosition = new Vector2(58*(commandNum-2)-30,0);
         if (Input.GetKeyDown(KeyCode.Q))
         {
             print("Approval Key Pressed");
+			dragonScript.approve (commandNum);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             print("Disapproval Key Pressed");
+			dragonScript.disapprove (commandNum);
         }
 
         //put command through with a right click
