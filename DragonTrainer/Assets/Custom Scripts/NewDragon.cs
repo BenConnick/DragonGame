@@ -286,6 +286,7 @@ public class NewDragon : VehicleBehavior {
 		);
 
 		print ("approved");
+		save ();
 	}
 
 	public void disapprove(int idx=3) {
@@ -304,6 +305,11 @@ public class NewDragon : VehicleBehavior {
 		);
 
 		print ("disapproved");
+		save ();
+	}
+
+	void save() {
+		brain.Tab2File ("dragonObservations.txt");
 	}
 
 }
