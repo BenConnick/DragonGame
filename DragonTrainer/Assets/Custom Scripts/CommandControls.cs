@@ -53,21 +53,24 @@ public class CommandControls : MonoBehaviour {
         marker.gameObject.GetComponent<Renderer>().material.color = new Color(0.5f, 0.2f, 0.6f); // idle tracking color -- purple for high contrast
 
 		dragonScript = dragon.GetComponent<NewDragon> ();
+
+        marker.transform.localScale = new Vector3(1.0f, 12.0f, 1.0f);//scale to indicate target
+        marker.gameObject.GetComponent<Renderer>().material.color = new Color(1.0f, 0.2f, 0.2f); // attackColor
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (commandNum != 0)
-        {
-            //reset the target variable
-            if(activeTarget) {activeTarget = false;}
+        //if (commandNum != 0)
+        //{
+        //    //reset the target variable
+        //    if(activeTarget) {activeTarget = false;}
 
-            castCommand();
-        }
+        //    castCommand();
+        //}
 
-        if(activeTarget)
+        if(dragonScript.getTarget() != null)
         {
-            marker.transform.position = targetEnemy.transform.position;
+            marker.transform.position = dragonScript.getTarget().transform.position;
         }
 
         //move to a point
@@ -150,11 +153,13 @@ public class CommandControls : MonoBehaviour {
         {
             print("Approval Key Pressed");
 			dragonScript.approve (commandNum);
+            command[commandNum - 1].transform.GetComponent<UnityEngine.UI.RawImage>().texture = comText[2];
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             print("Disapproval Key Pressed");
 			dragonScript.disapprove (commandNum);
+            command[commandNum - 1].transform.GetComponent<UnityEngine.UI.RawImage>().texture = comText[3];
         }
 
         //put command through with a right click

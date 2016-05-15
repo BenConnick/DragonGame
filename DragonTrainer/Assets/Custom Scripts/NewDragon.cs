@@ -14,10 +14,10 @@ public class NewDragon : VehicleBehavior {
 
 	protected Observation[] lastFourDecisions;
 
-	public int getDecision()
-	{
-		return (int)decision;
-	}
+    public int getDecision()
+    {
+        return (int)decision;
+    }
 
 	//Attributes 
 	public float wanderWt = 10.0f;
@@ -33,6 +33,11 @@ public class NewDragon : VehicleBehavior {
 	protected NavMeshAgent nAgent;
 	protected int mode;
 	EnemyManager manager;
+
+    public Transform getTarget()
+    {
+        return target;
+    }
 
 	protected Bayes brain;
 
