@@ -25,7 +25,7 @@ public class Tower : MonoBehaviour {
 	}
 		
 	public void Damage(float amount) {
-		print (amount);
+		//print (amount);
 		health -= amount;
 		healthBar.DisplayHealth (health);
 	}

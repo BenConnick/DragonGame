@@ -386,7 +386,7 @@ namespace BayesDemo
 
 			/* To turn off output, remove this end comment -> */
 			double yesNno = playYes + playNo;
-			Debug.Log ("playYes: {0}" + playYes);	// Use scientifice notation
+			//Debug.Log ("playYes: {0}" + playYes);	// Use scientifice notation
 			Console.WriteLine ("playNo:  {0}", playNo);		// for very small numbers
 			Console.WriteLine ("playYes Normalized: {0,6:F4}", playYes / yesNno);
 			Console.WriteLine ("playNo  Normalized: {0,6:F4}", playNo / yesNno);

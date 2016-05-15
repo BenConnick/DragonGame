@@ -67,6 +67,7 @@
      <Compile Include="Assets\Custom Scripts\Turret.cs" />
      <Compile Include="Assets\Custom Scripts\Waypoint.cs" />
      <Compile Include="Assets\Custom Scripts\obstacleScript.cs" />
+     <Compile Include="Assets\Custom Scripts\teleport.cs" />
      <Compile Include="Assets\Custom Scripts\vehicleBehaviors.cs" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Standard Assets\Characters\ThirdPersonCharacter\ThirdPersonCharacterGuidelines.txt" />

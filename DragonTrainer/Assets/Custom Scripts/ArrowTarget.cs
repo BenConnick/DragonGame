@@ -11,7 +11,6 @@ public class ArrowTarget : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		score = GameObject.FindObjectOfType<Score> ();
-		print (score);
 	}
 
 	void OnCollisionEnter (Collision col)

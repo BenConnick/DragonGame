@@ -244,7 +244,7 @@ public class NewDragon : VehicleBehavior {
 			closestEnemyDistanceToTower,
 			enemiesNearTowerEnemy,
 			distToTower);
-		print (goHome);
+		//print (goHome);
 
 		// save this decision
 		for (var i=3; i>-1; i--) {
