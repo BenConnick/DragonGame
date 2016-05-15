@@ -171,6 +171,7 @@ public class EnemyBehavior : VehicleBehavior {
 
             //record damage
 			damageToTower += damageOutput * Time.deltaTime;
+			go.SendMessage ("Damage", damageOutput * Time.deltaTime, SendMessageOptions.DontRequireReceiver);
         }
         if (go.tag == "dragon")
         {

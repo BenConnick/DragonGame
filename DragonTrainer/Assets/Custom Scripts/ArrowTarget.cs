@@ -6,9 +6,12 @@ public class ArrowTarget : MonoBehaviour {
 	public GameObject particleEffect;
 	public bool destroyOnHit = false;
 
+	protected Score score;
+
 	// Use this for initialization
 	void Start () {
-
+		score = GameObject.FindObjectOfType<Score> ();
+		print (score);
 	}
 
 	void OnCollisionEnter (Collision col)
@@ -23,6 +26,8 @@ public class ArrowTarget : MonoBehaviour {
 			if (destroyOnHit) {
 				EnemyBehavior e = gameObject.GetComponent<EnemyBehavior>();
 				e.setHealth (0);
+				score.score += 15;
+				score.DisplayScore ();
 			}
 		}
 	}

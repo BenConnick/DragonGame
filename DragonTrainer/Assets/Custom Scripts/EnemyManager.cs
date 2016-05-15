@@ -21,7 +21,6 @@ public class EnemyManager : MonoBehaviour {
     public Object enemyPrefab;
     private GameObject[] tempEnemies;
     public Object treePrefab;
-
     public ArrayList enemies = new ArrayList();
 
 	// Genetic algorithm bits

@@ -10,6 +10,7 @@ TagManager:
   - enemy
   - marker
   - dragon
+  - score
   layers:
   - Default
   - TransparentFX
