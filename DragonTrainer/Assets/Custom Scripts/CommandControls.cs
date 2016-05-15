@@ -199,6 +199,9 @@ public class CommandControls : MonoBehaviour {
             command[i].transform.GetComponent<UnityEngine.UI.RawImage>().texture = current;
             current = next;
         }
+
+        //make the highlight follow the command the player selected
+        if (commandNum > 0 && commandNum < 4) { commandNum++; }
     }
 
     //raycasting method for commands -- may need arg for command number

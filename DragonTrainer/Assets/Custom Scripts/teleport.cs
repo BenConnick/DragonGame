@@ -15,7 +15,10 @@ public class teleport : MonoBehaviour {
 
 	// teleport on enter
 	void OnTriggerEnter(Collider other) {
-		print ("teleport");
-		other.transform.position = new Vector3 (70, 40, 10);
+        if (other.tag != "dragon")
+        {
+            print("teleport");
+            other.transform.position = new Vector3(70, 40, 10);
+        }
 	}
 }
